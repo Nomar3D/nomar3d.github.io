@@ -1,0 +1,2603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nomar3D - Impressions 3D</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #e0e0e0;
+            background: #0a0e27;
+        }
+
+        section {
+            background: transparent !important;
+        }
+
+        header {
+            background: #0a0e27;
+            color: white;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 200, 255, 0.5);
+            border-bottom: 2px solid #00d4ff;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 
+                0 0 10px #00d4ff,
+                0 0 20px #00d4ff,
+                0 0 30px #00d4ff,
+                0 0 40px #0099ff;
+            animation: neonPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes neonPulse {
+            0%, 100% {
+                text-shadow: 
+                    0 0 10px #00d4ff,
+                    0 0 20px #00d4ff,
+                    0 0 30px #00d4ff,
+                    0 0 40px #0099ff;
+            }
+            50% {
+                text-shadow: 
+                    0 0 5px #00d4ff,
+                    0 0 10px #00d4ff,
+                    0 0 15px #00d4ff,
+                    0 0 20px #0099ff;
+            }
+        }
+
+        .menu-toggle {
+            background: none;
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            box-shadow: 
+                0 0 10px #00d4ff,
+                inset 0 0 10px rgba(0, 212, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .menu-toggle:hover {
+            box-shadow: 
+                0 0 20px #00d4ff,
+                0 0 30px #00d4ff,
+                inset 0 0 15px rgba(0, 212, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        nav {
+            background: #0a0e27;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            border-top: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        nav.active {
+            max-height: 500px;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav li {
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        nav a {
+            color: #00d4ff;
+            text-decoration: none;
+            display: block;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        nav a:hover {
+            background: rgba(0, 212, 255, 0.1);
+            text-shadow: 0 0 10px #00d4ff;
+            padding-left: 2rem;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #00d4ff;
+            transform: scaleY(0);
+            transition: transform 0.3s;
+            box-shadow: 0 0 10px #00d4ff;
+        }
+
+        nav a:hover::before {
+            transform: scaleY(1);
+        }
+
+        main {
+            margin-top: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        section {
+            padding: 2rem 1.5rem;
+            min-height: calc(100vh - 60px);
+            padding-bottom: 4rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #00d4ff;
+            text-shadow: 
+                0 0 10px #00d4ff,
+                0 0 20px #00d4ff,
+                0 0 30px #0099ff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #a0d8f1;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+        }
+
+        h2 {
+            text-align: center;
+            color: #00d4ff;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-shadow: 
+                0 0 10px #00d4ff,
+                0 0 20px #0099ff;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .catalog-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .product-card {
+                padding: 1rem;
+                min-height: 200px;
+            }
+            
+            .product-image {
+                height: 120px;
+            }
+        }
+
+        .product-card {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 
+                0 3px 10px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(0, 212, 255, 0.2),
+                inset 0 0 20px rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            -webkit-tap-highlight-color: rgba(0, 212, 255, 0.3);
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+        .product-card:active {
+            transform: scale(0.98);
+            box-shadow: 
+                0 2px 8px rgba(0, 212, 255, 0.5),
+                0 0 20px rgba(0, 212, 255, 0.4),
+                inset 0 0 25px rgba(0, 212, 255, 0.15);
+        }
+
+        .product-card * {
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .product-card h3 {
+            color: #00d4ff;
+        }
+
+        .product-card p {
+            color: #a0d8f1;
+        }
+
+        .product-emoji {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            color: #00ff88;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .cash-discount {
+            color: #ffcc00;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
+        }
+
+        .video-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #00d4ff;
+            box-shadow: 
+                0 5px 20px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 177.78%; /* Ratio pour YouTube Shorts (9:16) */
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #000;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .video-container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+        }
+
+        .product-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mystery-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .mystery-box {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(0, 212, 255, 0.3),
+                inset 0 0 30px rgba(0, 212, 255, 0.05);
+            border: 2px solid #00d4ff;
+            transition: all 0.3s;
+        }
+
+        .mystery-box:hover {
+            transform: scale(1.03);
+            box-shadow: 
+                0 8px 25px rgba(0, 212, 255, 0.5),
+                0 0 50px rgba(0, 212, 255, 0.4),
+                inset 0 0 40px rgba(0, 212, 255, 0.1);
+        }
+
+        .mystery-box h3 {
+            color: #00d4ff;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+
+        .mystery-box p {
+            color: #a0d8f1;
+        }
+
+        .price {
+            font-size: 2rem;
+            color: #ff00ff;
+            font-weight: bold;
+            margin: 1rem 0;
+            text-shadow: 
+                0 0 10px #ff00ff,
+                0 0 20px #ff00ff,
+                0 0 30px #ff00ff;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff00ff 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-top: 1rem;
+            font-weight: bold;
+            box-shadow: 
+                0 0 20px rgba(0, 212, 255, 0.5),
+                0 0 30px rgba(255, 0, 255, 0.5);
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 30px rgba(0, 212, 255, 0.7),
+                0 0 50px rgba(255, 0, 255, 0.7);
+        }
+
+        .features {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature h3 {
+            color: #1e5bb8;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .contact-info {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 
+                0 3px 15px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .contact-info p {
+            font-size: 1rem;
+            margin: 1rem 0;
+            color: #a0d8f1;
+        }
+
+        .contact-info a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .contact-info a:hover {
+            text-shadow: 0 0 15px #00d4ff;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            background: #0a0e27;
+            color: #00d4ff;
+            text-align: center;
+            padding: 2rem 1rem;
+            border-top: 2px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 -2px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .product-detail {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            border: 2px solid #00d4ff;
+            box-shadow: 
+                0 5px 20px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .product-detail-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .product-detail-image:hover {
+            transform: scale(1.05);
+        }
+
+        .image-gallery {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+        }
+
+        .gallery-thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .gallery-thumbnail:hover {
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .gallery-thumbnail.active {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+        }
+
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-modal.active {
+            display: flex;
+        }
+
+        .modal-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #00d4ff;
+            font-size: 3rem;
+            cursor: pointer;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+        }
+
+        .modal-close:hover {
+            color: #00ff88;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+        }
+
+        .product-detail-emoji {
+            font-size: 5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .product-detail h3 {
+            color: #00d4ff;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+
+        .product-detail p {
+            color: #a0d8f1;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .product-detail-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background: transparent;
+            color: #00d4ff;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+        }
+
+        .admin-login {
+            max-width: 400px;
+            margin: 2rem auto;
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .admin-panel {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 5px;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .admin-product-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .admin-product-item {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-product-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-product-emoji {
+            font-size: 2rem;
+        }
+
+        .admin-product-name {
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff0055 0%, #ff0099 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
+            transition: all 0.3s;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 0 25px rgba(255, 0, 85, 0.7);
+            transform: scale(1.05);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #0a0e27;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ff0055;
+            text-align: center;
+            margin-top: 1rem;
+            text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+        }
+
+        .user-info {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .user-email {
+            color: #00d4ff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .cart-item {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-item-emoji {
+            font-size: 2.5rem;
+        }
+
+        .cart-item-details h3 {
+            color: #00d4ff;
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-item-details p {
+            color: #a0d8f1;
+            font-size: 0.9rem;
+        }
+
+        .cart-empty {
+            text-align: center;
+            color: #a0d8f1;
+            padding: 3rem;
+            font-size: 1.2rem;
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-add-cart {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #0a0e27;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s;
+        }
+
+        .btn-add-cart:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .reviews-section {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            border-radius: 15px;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .review-form {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .star {
+            cursor: pointer;
+            color: #4a5568;
+            transition: all 0.3s;
+            text-shadow: 0 0 10px rgba(74, 85, 104, 0.5);
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            transform: scale(1.2);
+        }
+
+        .review-card {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            margin-bottom: 1rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-name {
+            color: #00d4ff;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .review-stars {
+            color: #ffd700;
+            font-size: 1.2rem;
+        }
+
+        .review-text {
+            color: #a0d8f1;
+            margin-top: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .review-date {
+            color: #6b7280;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .promo-section {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-top: 2rem;
+            box-shadow: 0 3px 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .promo-code-display {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px dashed #00d4ff;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .promo-code {
+            font-size: 1.8rem;
+            color: #00ff88;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.7);
+            font-family: 'Courier New', monospace;
+        }
+
+        .promo-status {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .promo-active {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+
+        .promo-used {
+            background: rgba(255, 0, 85, 0.2);
+            color: #ff0055;
+            border: 1px solid #ff0055;
+        }
+
+        .promo-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .promo-input-group input {
+            flex: 1;
+        }
+
+        .promo-info {
+            color: #a0d8f1;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .promo-discount {
+            color: #00ff88;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        @media (min-width: 768px) {
+            .catalog-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .mystery-boxes {
+                flex-direction: row;
+            }
+            
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            section {
+                padding: 3rem 2rem;
+            }
+        }
+
+        /* Carousel */
+        .carousel {
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            cursor: pointer;
+            position: relative;
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(10, 14, 39, 0.95));
+            padding: 1.5rem 1rem 1rem;
+            text-align: center;
+        }
+
+        .carousel-caption h3 {
+            color: #00d4ff;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #00d4ff;
+            margin-bottom: 0.2rem;
+        }
+
+        .carousel-caption p {
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(0, 212, 255, 0.4);
+            box-shadow: 0 0 15px #00d4ff;
+        }
+
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.3);
+            border: 1px solid #00d4ff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-dot.active {
+            background: #00d4ff;
+            box-shadow: 0 0 10px #00d4ff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Fond animé -->
+    <canvas id="bg-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+
+    <header>
+        <div class="header-top">
+            <div class="logo">Nomar3D</div>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        </div>
+        <nav id="mainNav">
+            <ul>
+                <li><a onclick="showSection('accueil')">Accueil</a></li>
+                <li><a onclick="showSection('catalogue')">Catalogue</a></li>
+                <li><a onclick="showSection('mystere')">Boîtes Mystère</a></li>
+                <li><a onclick="showSection('pourquoi')">Pourquoi moi ?</a></li>
+                <li><a onclick="showSection('contact')">Contact</a></li>
+                <li><a onclick="showSection('panier')">🛒 Panier (<span id="cart-count">0</span>)</a></li>
+                <li><a onclick="showSection('compte')">👤 Mon Compte</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="accueil" class="hero">
+            <h1>Bienvenue chez Nomar3D</h1>
+            <p>Impressions 3D de qualité à prix abordables</p>
+
+            <div class="carousel" id="hero-carousel">
+                <div class="carousel-track" id="carousel-track">
+                </div>
+                <button class="carousel-btn prev" onclick="carouselPrev()">&#8249;</button>
+                <button class="carousel-btn next" onclick="carouselNext()">&#8250;</button>
+            </div>
+            <div class="carousel-dots" id="carousel-dots"></div>
+
+            <a href="#" onclick="showSection('catalogue')" class="btn" style="margin-top:2rem;">Découvrir le catalogue</a>
+        </section>
+
+        <section id="catalogue" class="hidden">
+            <h2>Catalogue</h2>
+
+            <!-- Barre de recherche -->
+            <div style="max-width:500px; margin:0 auto 2rem auto; position:relative;">
+                <input type="text" id="search-input" placeholder="🔍 Rechercher un produit..." 
+                    oninput="filterCatalog(this.value)"
+                    style="width:100%; padding:0.9rem 1.2rem; border-radius:50px; border:2px solid #00d4ff;
+                           background:rgba(0,20,60,0.7); color:#fff; font-size:1rem; outline:none;
+                           box-shadow:0 0 15px rgba(0,212,255,0.3); box-sizing:border-box;">
+            </div>
+
+            <!-- Message aucun résultat -->
+            <div id="no-result" style="display:none; text-align:center; padding:2rem;">
+                <p style="font-size:1.1rem; color:#e0e0e0; margin-bottom:1rem;">😕 Tu ne trouve pas ce que tu cherche ?</p>
+                <a href="mailto:lucas.nomme29@gmail.com?subject=Demande objet personnalisé" 
+                   style="display:inline-block; background:linear-gradient(135deg,#00d4ff,#ff00ff); 
+                          color:#fff; padding:0.8rem 1.8rem; border-radius:50px; font-weight:bold;
+                          text-decoration:none; box-shadow:0 0 20px rgba(0,212,255,0.4);">
+                    📧 Envoie moi un mail pour un objet personnalisé
+                </a>
+            </div>
+
+            <div class="catalog-grid" id="catalog-grid">
+            </div>
+        </section>
+
+        <!-- Modal pour agrandir les images -->
+        <div id="image-modal" class="image-modal" onclick="closeImageModal()">
+            <span class="modal-close" onclick="closeImageModal()">✕</span>
+            <img id="modal-image" class="modal-image" src="" alt="Image agrandie">
+        </div>
+
+        <section id="product-detail" class="hidden">
+            <h2>Détails du produit</h2>
+            <div class="product-detail">
+                <img id="detail-image" class="product-detail-image" src="" alt="" style="display:none;" onclick="openImageModal()">
+                <div class="product-detail-emoji" id="detail-emoji" style="display:none;">🎮</div>
+                <div id="image-gallery" class="image-gallery" style="display:none;"></div>
+                <h3 id="detail-title">Produit</h3>
+                <p id="detail-price" style="color:#00ff88; font-size:1.5rem; font-weight:bold; text-align:center;"></p>
+                <p id="detail-description">Description détaillée du produit.</p>
+                <div id="detail-warning" style="display:none; background:rgba(255,200,0,0.15); border:2px solid #ffcc00; border-radius:12px; padding:1rem; margin:1rem 0; text-align:center; color:#ffcc00; font-weight:bold; font-size:1rem; text-shadow: 0 0 8px rgba(255,204,0,0.5);"></div>
+                <div class="product-detail-actions">
+                    <button onclick="addToCart()" class="btn-add-cart" id="add-to-cart-btn">➕ Ajouter au panier</button>
+                    <a href="#" onclick="showSection('catalogue')" class="btn-secondary">Retour au catalogue</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="mystere" class="hidden">
+            <h2>Boîtes Mystère 🎁</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">
+                Laissez-vous surprendre !
+            </p>
+            <div class="mystery-boxes">
+                <div class="mystery-box">
+                    <h3>📦 Petite</h3>
+                    <div class="price">5€</div>
+                    <p>Une surprise imprimée en 3D</p>
+                    <a href="/cdn-cgi/l/email-protection#5539203634267b3b3a383830676c153238343c397b363a386a2620373f30362168163a3838343b313075173a96fb213075182c262196fd2730750530213c213073373a312c68173a3b3f3a2027797065117065147065117065141f3075263a203d343c213075363a3838343b31302775203b3075173a96fb213075182c262196fd2730750530213c2130757d60b7d7f97c7b706511706514706511706514183a3b753b3a38756f706511706514183a3b753431273026263075313075393c2327343c263a3b756f706511706514183a3b752196fc3996fc253d3a3b30756f706511706514706511706514183027363c7574" class="btn">Commander</a>
+                </div>
+                <div class="mystery-box">
+                    <h3>📦 Moyenne</h3>
+                    <div class="price">10€</div>
+                    <p>Plusieurs objets surprises</p>
+                    <a href="/cdn-cgi/l/email-protection#107c657371633e7e7f7d7d75222950777d71797c3e737f7d2f6365727a7573642d537f7d7d717e747530527fd3be6475305d696364d3b86275305d7f69757e7e7536727f74692d527f7e7a7f65623c3520543520513520543520515a7530637f65787179647530737f7d7d717e74756230657e7530527fd3be6475305d696364d3b86275305d7f69757e7e7530382120f292bc393e3520543520513520543520515d7f7e307e7f7d302a3520543520515d7f7e3071746275636375307475307c7966627179637f7e302a3520543520515d7f7e3064d3b97cd3b960787f7e75302a3520543520513520543520515d756273793031" class="btn">Commander</a>
+                </div>
+                <div class="mystery-box">
+                    <h3>📦 Grande</h3>
+                    <div class="price">15€</div>
+                    <p>La boîte ultime !</p>
+                    <a href="/cdn-cgi/l/email-protection#dfb3aabcbeacf1b1b0b2b2baede69fb8b2beb6b3f1bcb0b2e0acaabdb5babcabe29cb0b2b2beb1bbbaff9db01c71abbaff92a6acab1c77adbaff98adbeb1bbbaf9bdb0bba6e29db0b1b5b0aaadf3faef9bfaef9efaef9bfaef9e95baffacb0aab7beb6abbaffbcb0b2b2beb1bbbaadffaab1baff9db01c71abbaff92a6acab1c77adbaff98adbeb1bbbafff7eeea3d5d73f6f1faef9bfaef9efaef9bfaef9e92b0b1ffb1b0b2ffe5faef9bfaef9e92b0b1ffbebbadbaacacbaffbbbaffb3b6a9adbeb6acb0b1ffe5faef9bfaef9e92b0b1ffab1c76b31c76afb7b0b1baffe5faef9bfaef9efaef9bfaef9e92baadbcb6fffe" class="btn">Commander</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="pourquoi" class="hidden">
+            <h2>Pourquoi moi ?</h2>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">✨</div>
+                    <h3>Qualité Premium</h3>
+                    <p>Impressions de haute précision</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Livraison Express</h3>
+                    <p>Expédition rapide</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Personnalisation</h3>
+                    <p>Créations sur mesure</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">💰</div>
+                    <h3>Prix Abordables</h3>
+                    <p>Tarifs compétitifs</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Service Client</h3>
+                    <p>À votre écoute</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">♻️</div>
+                    <h3>Écologique</h3>
+                    <p>Matériaux responsables</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="contact" class="hidden">
+            <h2>Contact</h2>
+            <div class="contact-info">
+                <p style="text-align: center; margin-bottom: 2rem;">
+                    N'hésitez pas à me contacter !
+                </p>
+                <p>
+                    <strong>📧 Email :</strong><br>
+                    <a href="mailto:lucas.nomme29@gmail.com">lucas.nomme29@gmail.com</a>
+                </p>
+                <p>
+                    <strong>📱 Téléphone :</strong><br>
+                    <a href="tel:+33651676224">06 51 67 62 24</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Nomar3D - Tous droits réservés</p>
+    </footer>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AQZRb8mwZzc6gBTIAFW1-BTg3iJBFlYngtyAUwDRIHqCc5utDv08yRFURrG1aaoFohJpOBqIlM9BEyv4&currency=EUR"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        // CODES PROMO
+        const PROMO_CODES = {
+            '3DSTART': { discount: 0.10, description: '-10%' },
+            'MONSTER': { discount: 0.20, description: '-20%' }
+        };
+        
+        // Compte admin avec codes promo illimités
+        const ADMIN_EMAIL = "lucas.nomme29@gmail.com";
+        
+        // EmailJS Configuration
+        emailjs.init("_DKOa4vOR0-Pftqod");
+        
+        // Données utilisateur
+        let userEmail = null;
+        let cart = [];
+        let currentProduct = null;
+        let promoCodeApplied = false;
+        let appliedPromoCode = null;
+        let pendingRegistration = null;
+        let selectedRating = 0;
+        let reviews = [];
+        
+        // Base de données des produits
+        let products = [
+            { 
+                id: 'produit1', 
+                emoji: '👽', 
+                name: 'Alien', 
+                description: 'Figurine alien imprimée en 3D', 
+                price: '3€', 
+                images: ['https://i.imgur.com/GcCVNhi.jpeg']
+            },
+            { 
+                id: 'produit2', 
+                emoji: '🌀', 
+                name: 'Anti-stress Spiral', 
+                description: 'Spirale anti-stress imprimée en 3D', 
+                price: '4€', 
+                images: ['https://i.imgur.com/BfN9fHa.jpeg']
+            },
+            { 
+                id: 'produit3', 
+                emoji: '⚡', 
+                name: 'Pokémon Mécha Mewtwo', 
+                description: 'Figurine Mécha Mewtwo imprimée en 3D', 
+                price: '7€', 
+                images: ['https://i.imgur.com/Z8D8ZvX.jpeg']
+            },
+            { 
+                id: 'produit4', 
+                emoji: '🔥', 
+                name: 'Pokémon Mécha Dracaufeu', 
+                description: 'Figurine Mécha Dracaufeu imprimée en 3D', 
+                price: '4€', 
+                images: ['https://i.imgur.com/bybP1YN.jpeg']
+            },
+            { 
+                id: 'produit5', 
+                emoji: '😴', 
+                name: 'Pokémon Ronflex', 
+                description: 'Figurine Ronflex imprimée en 3D', 
+                price: '4€', 
+                images: ['https://i.imgur.com/fU5gAyX.jpeg']
+            },
+            { 
+                id: 'produit6', 
+                emoji: '🏓', 
+                name: 'Balle de Ping-Pong', 
+                description: 'Balle de ping-pong imprimée en 3D', 
+                price: '4€', 
+                images: ['https://i.imgur.com/ZgrsopU.jpeg']
+            },
+            { 
+                id: 'produit7', 
+                emoji: '🦋', 
+                name: 'Couteau papillon + support', 
+                description: 'Couteau papillon de bonne qualité et coulisse bien', 
+                price: '5€', 
+                images: ['https://i.imgur.com/EiAxyW6.jpeg', 'https://i.imgur.com/cndrH04.jpeg']
+            },
+            { 
+                id: 'produit8', 
+                emoji: '📱', 
+                name: 'Coque iPhone', 
+                description: 'Coque iPhone imprimée en 3D, résistante et légère. Compatible MagSafe.', 
+                warning: "⚠️ Pour mettre la coque : rentre bien d'abord le haut et après le bas.",
+                price: '4€', 
+                images: ['https://i.ibb.co/5hh26wZX/IMG-2392.jpg', 'https://i.ibb.co/cSdQczWC/IMG-2391.jpg']
+            }
+        ];
+
+        function toggleMenu() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('active');
+        }
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('main section');
+            sections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+            
+            const nav = document.getElementById('mainNav');
+            nav.classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Si on accède au panier, vérifier la connexion
+            if (sectionId === 'panier') {
+                updateCartDisplay();
+            }
+        }
+
+        function login() {
+            const email = document.getElementById('user-email').value.trim();
+            const password = document.getElementById('user-password').value;
+            const errorMsg = document.getElementById('login-error');
+            
+            if (!email || !email.includes('@')) {
+                errorMsg.textContent = 'Veuillez entrer une adresse email valide';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            if (!password || password.length < 6) {
+                errorMsg.textContent = 'Le mot de passe doit contenir au moins 6 caractères';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            const storedPassword = localStorage.getItem('password_' + email);
+            const isVerified = localStorage.getItem('verified_' + email) === 'true';
+            
+            if (storedPassword === null) {
+                errorMsg.textContent = 'Aucun compte trouvé. Créez un compte d\'abord.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            if (!isVerified) {
+                errorMsg.textContent = 'Compte non vérifié. Vérifiez vos emails.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            if (storedPassword === password) {
+                completeLogin(email);
+            } else {
+                errorMsg.textContent = 'Mot de passe incorrect !';
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function showRegistration() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('registration-section').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('registration-section').style.display = 'none';
+            document.getElementById('verification-section').style.display = 'none';
+            document.getElementById('password-reset-section').style.display = 'none';
+            document.getElementById('register-message').style.display = 'none';
+            document.getElementById('verify-message').style.display = 'none';
+            document.getElementById('reset-message').style.display = 'none';
+        }
+
+        function requestRegistration() {
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            const messageElement = document.getElementById('register-message');
+            
+            if (!email || !email.includes('@')) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Email invalide';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            if (password.length < 6) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Le mot de passe doit contenir au moins 6 caractères';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            if (password !== confirm) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Les mots de passe ne correspondent pas';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            const existingAccount = localStorage.getItem('password_' + email);
+            if (existingAccount !== null) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Un compte existe déjà avec cet email';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            pendingRegistration = {
+                email: email,
+                password: password,
+                code: '2983'
+            };
+            
+            // Envoi automatique de l'email avec EmailJS
+            emailjs.send('service_yfhuws5', 'template_3oszper', {
+                to_email: email,
+                email: email,
+                name: 'Client'
+            }).then(
+                function(response) {
+                    console.log('Email envoyé avec succès', response);
+                    messageElement.style.color = '#00ff88';
+                    messageElement.textContent = '✅ Email envoyé ! Vérifiez votre boîte mail.';
+                    messageElement.style.display = 'block';
+                    
+                    document.getElementById('registration-section').style.display = 'none';
+                    document.getElementById('verification-section').style.display = 'block';
+                },
+                function(error) {
+                    console.error('Erreur envoi email', error);
+                    messageElement.style.color = '#ff0055';
+                    messageElement.textContent = '❌ Erreur lors de l\'envoi de l\'email. Réessayez.';
+                    messageElement.style.display = 'block';
+                }
+            );
+            
+            // Notification pour toi
+            const subject = 'Nouvelle demande de compte - Nomar3D';
+            const body = `Bonjour,%0D%0A%0D%0ANouvelle demande de création de compte :%0D%0A%0D%0AEmail du client : ${email}%0D%0A%0D%0AUn email avec le code a été envoyé automatiquement au client.`;
+            window.open(`mailto:lucas.nomme29@gmail.com?subject=${subject}&body=${body}`, '_blank');
+        }
+
+        function verifyAccount() {
+            const code = document.getElementById('verification-code').value.trim();
+            const messageElement = document.getElementById('verify-message');
+            
+            if (!pendingRegistration) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Aucune demande en cours';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            if (code !== pendingRegistration.code) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Code incorrect';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            localStorage.setItem('password_' + pendingRegistration.email, pendingRegistration.password);
+            localStorage.setItem('verified_' + pendingRegistration.email, 'true');
+            
+            messageElement.style.color = '#00ff88';
+            messageElement.textContent = '✅ Compte créé avec succès ! Connexion...';
+            messageElement.style.display = 'block';
+            
+            setTimeout(() => {
+                completeLogin(pendingRegistration.email);
+                pendingRegistration = null;
+                document.getElementById('verification-code').value = '';
+            }, 1500);
+        }
+
+        function showPasswordReset() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('password-reset-section').style.display = 'block';
+            document.getElementById('reset-email').value = document.getElementById('user-email').value;
+        }
+
+        function requestPasswordReset() {
+            const email = document.getElementById('reset-email').value.trim();
+            const messageElement = document.getElementById('reset-message');
+            
+            if (!email || !email.includes('@')) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Email invalide';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            const existingAccount = localStorage.getItem('password_' + email);
+            if (existingAccount === null) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Aucun compte trouvé';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            const newPassword = Math.random().toString(36).slice(-8);
+            const tempCode = Math.floor(1000 + Math.random() * 9000).toString();
+            
+            const subject = 'Réinitialisation mot de passe Nomar3D';
+            const body = `Bonjour,%0D%0A%0D%0ADemande de réinitialisation de mot de passe :%0D%0A%0D%0AEmail : ${email}%0D%0ANouveau mot de passe temporaire : ${newPassword}%0D%0ACode : ${tempCode}%0D%0A%0D%0AMerci de lui communiquer son nouveau mot de passe.`;
+            
+            window.open(`mailto:lucas.nomme29@gmail.com?subject=${subject}&body=${body}`, '_blank');
+            
+            messageElement.style.color = '#00ff88';
+            messageElement.textContent = '✅ Demande envoyée ! Vous recevrez un nouveau mot de passe par email.';
+            messageElement.style.display = 'block';
+        }
+
+        function completeLogin(email) {
+            userEmail = email;
+            document.getElementById('display-email').textContent = email;
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('account-section').style.display = 'block';
+            document.getElementById('login-error').style.display = 'none';
+            
+            // Charger le panier sauvegardé
+            loadCart();
+            updateCartCount();
+        }
+
+        function applyPromoCode() {
+            const inputCode = document.getElementById('promo-input').value.trim().toUpperCase();
+            const messageElement = document.getElementById('promo-message');
+            
+            // Vérifier si cet utilisateur a déjà utilisé un code promo (sauf si admin)
+            const usedPromos = JSON.parse(localStorage.getItem('promo_used_' + userEmail) || '[]');
+            const isAdmin = userEmail === ADMIN_EMAIL;
+            
+            messageElement.style.display = 'block';
+            
+            if (inputCode === '') {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Veuillez entrer un code promo';
+                return;
+            }
+            
+            // Vérifier si le code existe
+            if (!PROMO_CODES[inputCode]) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Code promo invalide';
+                return;
+            }
+            
+            // Vérifier si l'utilisateur a déjà utilisé ce code (sauf si admin)
+            if (!isAdmin && usedPromos.includes(inputCode)) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Vous avez déjà utilisé ce code promo';
+                return;
+            }
+            
+            // Code valide !
+            promoCodeApplied = true;
+            appliedPromoCode = inputCode;
+            const discount = PROMO_CODES[inputCode];
+            
+            messageElement.style.display = 'none';
+            const adminBadge = isAdmin ? ' <span style="color: #00ff88;">(Admin - Illimité)</span>' : '';
+            document.getElementById('promo-applied').innerHTML = `<p class="promo-discount">✅ ${discount.description} de réduction appliquée !${adminBadge}</p>`;
+            document.getElementById('promo-applied').style.display = 'block';
+            document.getElementById('promo-input').disabled = true;
+            
+            renderPayPalButton();
+        }
+
+        function markPromoAsUsed() {
+            // Ne pas marquer comme utilisé si c'est le compte admin
+            if (userEmail === ADMIN_EMAIL) return;
+            
+            if (promoCodeApplied && appliedPromoCode && userEmail) {
+                const usedPromos = JSON.parse(localStorage.getItem('promo_used_' + userEmail) || '[]');
+                if (!usedPromos.includes(appliedPromoCode)) {
+                    usedPromos.push(appliedPromoCode);
+                    localStorage.setItem('promo_used_' + userEmail, JSON.stringify(usedPromos));
+                }
+            }
+        }
+
+        function changePassword() {
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorMsg = document.getElementById('password-error');
+            
+            if (!newPassword || newPassword.length < 6) {
+                errorMsg.textContent = 'Le mot de passe doit contenir au moins 6 caractères';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                errorMsg.textContent = 'Les mots de passe ne correspondent pas';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            const subject = 'Changement de mot de passe Nomar3D';
+            const body = `Bonjour,%0D%0A%0D%0ADemande de changement de mot de passe :%0D%0A%0D%0AEmail : ${userEmail}%0D%0ANouveau mot de passe : ${newPassword}%0D%0A%0D%0AMerci de valider ce changement.`;
+            
+            window.open(`mailto:lucas.nomme29@gmail.com?subject=${subject}&body=${body}`, '_blank');
+            
+            errorMsg.style.display = 'none';
+            alert('✅ Demande envoyée ! Le changement sera effectif après validation.');
+        }
+
+        function showPasswordReset() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('password-reset-section').style.display = 'block';
+            document.getElementById('reset-email').value = document.getElementById('user-email').value;
+        }
+
+        function showLogin() {
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('registration-section').style.display = 'none';
+            document.getElementById('verification-section').style.display = 'none';
+            document.getElementById('password-reset-section').style.display = 'none';
+            document.getElementById('register-message').style.display = 'none';
+            document.getElementById('verify-message').style.display = 'none';
+            document.getElementById('reset-message').style.display = 'none';
+        }
+
+        function sendPasswordReset() {
+            const email = document.getElementById('reset-email').value.trim();
+            const messageElement = document.getElementById('reset-message');
+            
+            if (!email || !email.includes('@')) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Veuillez entrer une adresse email valide';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            const storedPassword = localStorage.getItem('password_' + email);
+            
+            if (storedPassword === null) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Aucun compte trouvé avec cet email';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            const subject = 'Réinitialisation de votre mot de passe - Nomar3D';
+            const body = `Bonjour,%0D%0A%0D%0AJe souhaite réinitialiser mon mot de passe pour mon compte Nomar3D.%0D%0A%0D%0AMon email : ${email}%0D%0A%0D%0AMerci de m'envoyer les instructions pour créer un nouveau mot de passe.%0D%0A%0D%0ACordialement`;
+            
+            window.location.href = `mailto:lucas.nomme29@gmail.com?subject=${subject}&body=${body}`;
+            
+            messageElement.style.color = '#00ff88';
+            messageElement.textContent = '✅ Un email a été préparé. Envoyez-le pour recevoir vos instructions de réinitialisation.';
+            messageElement.style.display = 'block';
+        }
+
+        function logout() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                userEmail = null;
+                cart = [];
+                document.getElementById('login-section').style.display = 'block';
+                document.getElementById('account-section').style.display = 'none';
+                document.getElementById('user-email').value = '';
+                document.getElementById('user-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+                updateCartCount();
+                updateCartDisplay();
+            }
+        }
+
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            currentProduct = product;
+            
+            const imageElement = document.getElementById('detail-image');
+            const titleElement = document.getElementById('detail-title');
+            const priceElement = document.getElementById('detail-price');
+            const descElement = document.getElementById('detail-description');
+            const galleryElement = document.getElementById('image-gallery');
+            
+            // Afficher la première image
+            if (imageElement && product.images && product.images.length > 0) {
+                imageElement.src = product.images[0];
+                imageElement.style.display = 'block';
+            } else if (imageElement) {
+                imageElement.style.display = 'none';
+            }
+            
+            // Créer la galerie de miniatures
+            if (galleryElement && product.images && product.images.length > 1) {
+                galleryElement.innerHTML = '';
+                product.images.forEach((img, index) => {
+                    const thumbnail = document.createElement('img');
+                    thumbnail.src = img;
+                    thumbnail.className = 'gallery-thumbnail' + (index === 0 ? ' active' : '');
+                    thumbnail.onclick = () => { changeProductImage(img, thumbnail); };
+                    galleryElement.appendChild(thumbnail);
+                });
+                galleryElement.style.display = 'flex';
+            } else if (galleryElement) {
+                galleryElement.style.display = 'none';
+            }
+            
+            if (titleElement) titleElement.textContent = product.name;
+            if (priceElement) priceElement.textContent = product.price;
+            if (descElement) descElement.textContent = product.description || 'Figurine imprimée en 3D de haute qualité';
+            
+            // Afficher le message d'avertissement si présent
+            const warningEl = document.getElementById('detail-warning');
+            if (warningEl) {
+                if (product.warning) {
+                    warningEl.textContent = product.warning;
+                    warningEl.style.display = 'block';
+                } else {
+                    warningEl.style.display = 'none';
+                }
+            }
+            
+            showSection('product-detail');
+        }
+
+        function changeProductImage(imageSrc, clickedThumbnail) {
+            const mainImage = document.getElementById('detail-image');
+            if (mainImage) {
+                mainImage.src = imageSrc;
+            }
+            
+            // Mettre à jour les classes active
+            document.querySelectorAll('.gallery-thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            if (clickedThumbnail) {
+                clickedThumbnail.classList.add('active');
+            }
+        }
+
+        function openImageModal() {
+            const mainImage = document.getElementById('detail-image');
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            
+            if (mainImage && modal && modalImage) {
+                modalImage.src = mainImage.src;
+                modal.classList.add('active');
+            }
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        function addToCart() {
+            if (!userEmail) {
+                if (confirm('Vous devez être connecté pour ajouter au panier. Se connecter maintenant ?')) {
+                    showSection('compte');
+                }
+                return;
+            }
+            
+            if (!currentProduct) return;
+            
+            const existingItem = cart.find(item => item.id === currentProduct.id);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    id: currentProduct.id,
+                    emoji: currentProduct.emoji,
+                    name: currentProduct.name,
+                    description: currentProduct.description,
+                    price: currentProduct.price,
+                    quantity: 1
+                });
+            }
+            
+            saveCart();
+            updateCartCount();
+            
+            alert(`✅ ${currentProduct.name} ajouté au panier !`);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCart();
+            updateCartCount();
+            updateCartDisplay();
+        }
+
+        function clearCart() {
+            if (confirm('Êtes-vous sûr de vouloir vider votre panier ?')) {
+                cart = [];
+                promoCodeApplied = false;
+                appliedPromoCode = null;
+                saveCart();
+                updateCartCount();
+                updateCartDisplay();
+            }
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').textContent = totalItems;
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cart-items');
+            const cartEmpty = document.getElementById('cart-empty');
+            const cartActions = document.getElementById('cart-actions');
+            const cartPromoSection = document.getElementById('cart-promo-section');
+            
+            if (!userEmail) {
+                document.getElementById('cart-login-required').style.display = 'block';
+                document.getElementById('cart-content').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('cart-login-required').style.display = 'none';
+            document.getElementById('cart-content').style.display = 'block';
+            
+            if (cart.length === 0) {
+                cartEmpty.style.display = 'block';
+                cartActions.style.display = 'none';
+                cartPromoSection.style.display = 'none';
+                cartItems.innerHTML = '';
+                return;
+            }
+            
+            cartEmpty.style.display = 'none';
+            cartActions.style.display = 'block';
+            cartPromoSection.style.display = 'block';
+            
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <div class="cart-item-info">
+                        <div class="cart-item-emoji">${item.emoji}</div>
+                        <div class="cart-item-details">
+                            <h3>${item.name}</h3>
+                            <p>Quantité: ${item.quantity} - ${item.price}</p>
+                        </div>
+                    </div>
+                    <button class="btn-danger" onclick="removeFromCart('${item.id}')">Retirer</button>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+            
+            if (!promoCodeApplied) {
+                document.getElementById('promo-input').value = '';
+                document.getElementById('promo-input').disabled = false;
+                document.getElementById('promo-message').style.display = 'none';
+                document.getElementById('promo-applied').style.display = 'none';
+            }
+            
+            renderPayPalButton();
+        }
+
+        function renderPayPalButton() {
+            const container = document.getElementById('paypal-button-container');
+            container.innerHTML = '';
+            
+            let total = 0;
+            cart.forEach(item => {
+                const price = parseFloat(item.price.replace('€', '').replace(',', '.'));
+                total += price * item.quantity;
+            });
+            
+            let discount = 0;
+            if (promoCodeApplied && appliedPromoCode) {
+                discount = PROMO_CODES[appliedPromoCode].discount;
+                total = total * (1 - discount);
+            }
+            
+            if (window.paypal) {
+                window.paypal.Buttons({
+                    style: {
+                        layout: 'vertical',
+                        color: 'blue',
+                        shape: 'rect',
+                        label: 'pay'
+                    },
+                    createOrder: function(data, actions) {
+                        let itemsList = cart.map(item => ({
+                            name: item.name,
+                            unit_amount: {
+                                currency_code: 'EUR',
+                                value: parseFloat(item.price.replace('€', '').replace(',', '.')).toFixed(2)
+                            },
+                            quantity: item.quantity
+                        }));
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    currency_code: 'EUR',
+                                    value: total.toFixed(2),
+                                    breakdown: {
+                                        item_total: {
+                                            currency_code: 'EUR',
+                                            value: total.toFixed(2)
+                                        }
+                                    }
+                                },
+                                items: itemsList,
+                                payee: {
+                                    email_address: 'lucas.nomme29@gmail.com'
+                                }
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        return actions.order.capture().then(function(details) {
+                            // Récapitulatif des articles
+                            let articlesText = cart.map(item => 
+                                item.name + ' x' + item.quantity + ' = ' + (parseFloat(item.price.replace('\u20ac','')) * item.quantity) + '\u20ac'
+                            ).join('\n');
+                            
+                            let totalFinal = 0;
+                            cart.forEach(item => {
+                                totalFinal += parseFloat(item.price.replace('\u20ac','')) * item.quantity;
+                            });
+                            if (promoCodeApplied && appliedPromoCode) {
+                                totalFinal = totalFinal * (1 - PROMO_CODES[appliedPromoCode].discount);
+                            }
+
+                            // Envoyer email de notification
+                            emailjs.send('service_yfhuws5', 'template_cdg19jo', {
+                                client_email: details.payer.email_address,
+                                articles: articlesText,
+                                total: totalFinal.toFixed(2)
+                            });
+
+                            alert('\u2705 Paiement r\u00e9ussi ! Merci ' + details.payer.name.given_name + ' !\n\nMerci d\'envoyer votre adresse de livraison \u00e0 lucas.nomme29@gmail.com');
+                            
+                            if (promoCodeApplied) {
+                                markPromoAsUsed();
+                            }
+                            
+                            clearCart();
+                        });
+                    },
+                    onError: function(err) {
+                        alert('❌ Erreur lors du paiement. Veuillez réessayer.');
+                        console.error(err);
+                    }
+                }).render('#paypal-button-container');
+            }
+        }
+
+        function updateOrderButton() {
+            const orderBtn = document.getElementById('order-cart-btn');
+            
+            let emailBody = `Bonjour,%0D%0A%0D%0AJe souhaite commander les produits suivants :%0D%0A%0D%0A`;
+            
+            cart.forEach(item => {
+                emailBody += `- ${item.name} (x${item.quantity})%0D%0A`;
+            });
+            
+            emailBody += `%0D%0AMon nom :%0D%0AMon email : ${userEmail}%0D%0AMon adresse de livraison :%0D%0AMon téléphone :%0D%0A`;
+            
+            if (promoCodeApplied) {
+                emailBody += `%0D%0ACode promo : ${PROMO_CODE} (Réduction de 10%)%0D%0A`;
+            }
+            
+            emailBody += `%0D%0AMerci !`;
+            
+            orderBtn.href = `mailto:lucas.nomme29@gmail.com?subject=Commande Panier Nomar3D&body=${emailBody}`;
+            
+            // Ajouter un événement pour marquer le code promo comme utilisé
+            orderBtn.onclick = function() {
+                if (promoCodeApplied) {
+                    setTimeout(() => {
+                        markPromoAsUsed();
+                        alert('✅ Votre code promo a été utilisé ! Merci pour votre commande.');
+                    }, 1000);
+                }
+            };
+        }
+
+        function saveCart() {
+            if (userEmail) {
+                localStorage.setItem('cart_' + userEmail, JSON.stringify(cart));
+            }
+        }
+
+        function loadCart() {
+            if (userEmail) {
+                const savedCart = localStorage.getItem('cart_' + userEmail);
+                if (savedCart) {
+                    cart = JSON.parse(savedCart);
+                }
+            }
+        }
+
+        function refreshCatalog() {
+            const catalogGrid = document.getElementById('catalog-grid') || document.querySelector('.catalog-grid');
+            catalogGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                // Distinguer scroll et tap sur mobile
+                let touchStartY = 0;
+                let touchStartX = 0;
+                let touchStartTime = 0;
+
+                productCard.addEventListener('touchstart', function(e) {
+                    touchStartY = e.touches[0].clientY;
+                    touchStartX = e.touches[0].clientX;
+                    touchStartTime = Date.now();
+                }, { passive: true });
+
+                productCard.addEventListener('touchend', function(e) {
+                    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+                    const dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+                    const dt = Date.now() - touchStartTime;
+                    // Ouvrir seulement si c'est un vrai tap : peu de mouvement et rapide
+                    if (dy < 10 && dx < 10 && dt < 300) {
+                        e.preventDefault();
+                        showProductDetail(product.id);
+                    }
+                });
+
+                productCard.addEventListener('click', function(e) {
+                    showProductDetail(product.id);
+                });
+                
+                const imageUrl = product.images && product.images.length > 0 ? product.images[0] : product.image;
+                const imageHtml = imageUrl 
+                    ? `<img src="${imageUrl}" alt="${product.name}" class="product-image">`
+                    : `<div class="product-emoji">${product.emoji}</div>`;
+                
+                productCard.innerHTML = `
+                    ${imageHtml}
+                    <h3>${product.name}</h3>
+                    <p class="product-price">${product.price}</p>
+                    <p class="cash-discount">💶 -1€ en liquide</p>
+                    <p>${product.description}</p>
+                `;
+                catalogGrid.appendChild(productCard);
+            });
+        }
+
+        // Initialiser au chargement
+        window.addEventListener('load', () => {
+            refreshCatalog();
+            initCarousel();
+            updateCartCount();
+            setTimeout(() => {
+                initStarRating();
+                loadReviews();
+            }, 100);
+        });
+
+        // Système d'avis
+        function initStarRating() {
+            const stars = document.querySelectorAll('.star');
+            if (!stars || stars.length === 0) return;
+            
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    selectedRating = parseInt(this.getAttribute('data-rating'));
+                    updateStars();
+                });
+            });
+        }
+
+        function updateStars() {
+            const stars = document.querySelectorAll('.star');
+            if (!stars || stars.length === 0) return;
+            
+            stars.forEach(star => {
+                const rating = parseInt(star.getAttribute('data-rating'));
+                if (rating <= selectedRating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function updateReviewForm() {
+            const loginRequired = document.getElementById('review-login-required');
+            const formContent = document.getElementById('review-form-content');
+            
+            if (!loginRequired || !formContent) return;
+            
+            if (userEmail) {
+                loginRequired.style.display = 'none';
+                formContent.style.display = 'block';
+            } else {
+                loginRequired.style.display = 'block';
+                formContent.style.display = 'none';
+            }
+        }
+
+        function submitReview() {
+            const name = document.getElementById('review-name').value.trim();
+            const text = document.getElementById('review-text').value.trim();
+            
+            if (!name) {
+                alert('⚠️ Veuillez entrer votre prénom');
+                return;
+            }
+            
+            if (selectedRating === 0) {
+                alert('⚠️ Veuillez sélectionner une note');
+                return;
+            }
+            
+            if (!text) {
+                alert('⚠️ Veuillez écrire un avis');
+                return;
+            }
+            
+            const review = {
+                id: Date.now(),
+                name: name,
+                rating: selectedRating,
+                text: text,
+                date: new Date().toLocaleDateString('fr-FR'),
+                email: userEmail
+            };
+            
+            reviews.unshift(review);
+            saveReviews();
+            
+            document.getElementById('review-name').value = '';
+            document.getElementById('review-text').value = '';
+            selectedRating = 0;
+            updateStars();
+            
+            loadReviews();
+            
+            alert('✅ Merci pour votre avis !');
+        }
+
+        function saveReviews() {
+            localStorage.setItem('nomar3d_reviews', JSON.stringify(reviews));
+        }
+
+        function loadReviews() {
+            try {
+                const saved = localStorage.getItem('nomar3d_reviews');
+                if (saved) {
+                    reviews = JSON.parse(saved);
+                }
+                displayReviews();
+            } catch (error) {
+                console.error('Erreur chargement avis:', error);
+                reviews = [];
+                displayReviews();
+            }
+        }
+
+        function displayReviews() {
+            const container = document.getElementById('reviews-list');
+            if (!container) return;
+            
+            if (reviews.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #a0d8f1; padding: 2rem;">Aucun avis pour le moment. Soyez le premier !</p>';
+                return;
+            }
+            
+            container.innerHTML = reviews.map(review => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">${review.name}</span>
+                        <span class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
+                    </div>
+                    <p class="review-text">${review.text}</p>
+                    <p class="review-date">${review.date}</p>
+                </div>
+            `).join('');
+        }
+
+        // Carousel
+        let carouselIndex = 0;
+        let carouselInterval = null;
+
+        function initCarousel() {
+            const track = document.getElementById('carousel-track');
+            const dotsContainer = document.getElementById('carousel-dots');
+            if (!track || !dotsContainer) return;
+
+            // Prendre les 4 premiers produits avec image
+            const featuredProducts = products.filter(p => p.images && p.images.length > 0).slice(0, 4);
+
+            track.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            featuredProducts.forEach((product, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `
+                    <img src="${product.images[0]}" alt="${product.name}">
+                    <div class="carousel-caption">
+                        <h3>${product.name}</h3>
+                        <p>${product.price}</p>
+                    </div>
+                `;
+                slide.onclick = () => showProductDetail(product.id);
+                track.appendChild(slide);
+
+                const dot = document.createElement('div');
+                dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
+                dot.onclick = () => goToSlide(index);
+                dotsContainer.appendChild(dot);
+            });
+
+            // Auto-défilement toutes les 3 secondes
+            carouselInterval = setInterval(() => carouselNext(), 3000);
+        }
+
+        function goToSlide(index) {
+            const track = document.getElementById('carousel-track');
+            const dots = document.querySelectorAll('.carousel-dot');
+            if (!track) return;
+
+            const total = track.children.length;
+            carouselIndex = (index + total) % total;
+            track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+            dots.forEach((d, i) => d.classList.toggle('active', i === carouselIndex));
+        }
+
+        function carouselNext() { goToSlide(carouselIndex + 1); }
+        function carouselPrev() { goToSlide(carouselIndex - 1); }
+
+        // ===== FOND ANIMÉ PARTICULES NÉON =====
+        (function() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+
+            let width, height;
+            let particles = [];
+            let lines = [];
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+
+            function randomBetween(a, b) {
+                return a + Math.random() * (b - a);
+            }
+
+            const COLORS = ['#00d4ff', '#0099ff', '#ff00ff', '#00ff88'];
+
+            // Particules flottantes
+            function createParticle() {
+                return {
+                    x: randomBetween(0, width),
+                    y: randomBetween(0, height),
+                    r: randomBetween(1, 3),
+                    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                    speedX: randomBetween(-0.3, 0.3),
+                    speedY: randomBetween(-0.5, -0.1),
+                    alpha: randomBetween(0.3, 0.9),
+                    alphaDir: randomBetween(-0.005, 0.005)
+                };
+            }
+
+            // Lignes ondulantes en bas
+            function createLine() {
+                return {
+                    y: randomBetween(height * 0.3, height * 0.9),
+                    amplitude: randomBetween(20, 60),
+                    frequency: randomBetween(0.003, 0.008),
+                    speed: randomBetween(0.005, 0.02),
+                    offset: randomBetween(0, Math.PI * 2),
+                    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                    alpha: randomBetween(0.05, 0.15),
+                    width: randomBetween(1, 2)
+                };
+            }
+
+            function init() {
+                resize();
+                particles = [];
+                lines = [];
+                for (let i = 0; i < 60; i++) particles.push(createParticle());
+                for (let i = 0; i < 5; i++) lines.push(createLine());
+            }
+
+            function drawParticles() {
+                particles.forEach(p => {
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, Math.min(1, p.alpha));
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = 8;
+                    ctx.fill();
+                    ctx.restore();
+
+                    p.x += p.speedX;
+                    p.y += p.speedY;
+                    p.alpha += p.alphaDir;
+
+                    if (p.alpha <= 0.1 || p.alpha >= 1) p.alphaDir *= -1;
+                    if (p.y < -10) p.y = height + 10;
+                    if (p.x < -10) p.x = width + 10;
+                    if (p.x > width + 10) p.x = -10;
+                });
+            }
+
+            function drawWaves() {
+                lines.forEach(l => {
+                    l.offset += l.speed;
+                    ctx.save();
+                    ctx.globalAlpha = l.alpha;
+                    ctx.beginPath();
+                    ctx.strokeStyle = l.color;
+                    ctx.lineWidth = l.width;
+                    ctx.shadowColor = l.color;
+                    ctx.shadowBlur = 10;
+
+                    for (let x = 0; x <= width; x += 3) {
+                        const y = l.y + Math.sin(x * l.frequency + l.offset) * l.amplitude;
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+                    ctx.restore();
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                drawWaves();
+                drawParticles();
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', () => { resize(); });
+            init();
+            animate();
+        })();
+        // ===== FIN FOND ANIMÉ =====
+
+        // ===== VAISSEAU SPATIAL + CODE SECRET =====
+        var shipObj = null;
+        var exhaustList = [];
+
+        function spawnShip() {
+            shipObj = {
+                phase: 'enter',
+                x: -150,
+                y: window.innerHeight * 0.4,
+                speed: 3,
+                loopAngle: 0,
+                loopCenterX: window.innerWidth * 0.4,
+                loopCenterY: window.innerHeight * 0.4,
+                loopRadius: 70
+            };
+        }
+
+        window.forceSpawnShip = function() {
+            spawnShip();
+        };
+
+        function drawShipShape(ctx, x, y) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.shadowBlur = 30; ctx.shadowColor = '#00d4ff';
+            ctx.beginPath();
+            ctx.moveTo(60,0); ctx.lineTo(-30,-18); ctx.lineTo(-20,0); ctx.lineTo(-30,18);
+            ctx.closePath();
+            ctx.fillStyle = '#0a1628'; ctx.strokeStyle = '#00d4ff'; ctx.lineWidth = 1.5;
+            ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.ellipse(20,0,18,10,0,0,Math.PI*2);
+            ctx.fillStyle = 'rgba(0,212,255,0.3)'; ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(10,-18); ctx.lineTo(-25,-40); ctx.lineTo(-30,-18); ctx.closePath();
+            ctx.fillStyle='#0f2040'; ctx.strokeStyle='#ff00ff'; ctx.lineWidth=1; ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(10,18); ctx.lineTo(-25,40); ctx.lineTo(-30,18); ctx.closePath();
+            ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.ellipse(-28,0,8,5,0,0,Math.PI*2);
+            ctx.fillStyle='#ff6600'; ctx.shadowColor='#ff6600'; ctx.shadowBlur=20; ctx.fill();
+            ctx.restore();
+        }
+
+        function addExhaust(x, y) {
+            for (var i = 0; i < 3; i++) {
+                exhaustList.push({
+                    x: x - 30, y: y + (Math.random()-0.5)*10,
+                    vx: -(Math.random()*3+1), vy: (Math.random()-0.5)*1.5,
+                    alpha: 0.8, r: Math.random()*4+2,
+                    color: Math.random()<0.5 ? '#ff6600' : '#ffcc00'
+                });
+            }
+        }
+
+        function drawExhaust(ctx) {
+            exhaustList = exhaustList.filter(function(p) { return p.alpha > 0.05; });
+            exhaustList.forEach(function(p) {
+                p.x += p.vx; p.y += p.vy; p.alpha -= 0.04; p.r *= 0.96;
+                ctx.save(); ctx.globalAlpha = p.alpha;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                ctx.fillStyle = p.color; ctx.shadowColor = p.color; ctx.shadowBlur = 8; ctx.fill();
+                ctx.restore();
+            });
+        }
+
+        setInterval(function() {
+            if (!shipObj) return;
+            var canvas = document.getElementById('bg-canvas');
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+
+            if (shipObj.phase === 'enter') {
+                shipObj.x += shipObj.speed;
+                addExhaust(shipObj.x, shipObj.y);
+                drawShipShape(ctx, shipObj.x, shipObj.y);
+                drawExhaust(ctx);
+                if (shipObj.x >= shipObj.loopCenterX) {
+                    shipObj.phase = 'loop';
+                    shipObj.loopAngle = -Math.PI / 2;
+                }
+            } else if (shipObj.phase === 'loop') {
+                shipObj.loopAngle += 0.05;
+                shipObj.x = shipObj.loopCenterX + Math.cos(shipObj.loopAngle) * shipObj.loopRadius;
+                shipObj.y = shipObj.loopCenterY + Math.sin(shipObj.loopAngle) * shipObj.loopRadius;
+                addExhaust(shipObj.x, shipObj.y);
+                drawShipShape(ctx, shipObj.x, shipObj.y);
+                drawExhaust(ctx);
+                if (shipObj.loopAngle >= -Math.PI/2 + Math.PI*2*2) {
+                    shipObj.phase = 'exit';
+                    shipObj.y = shipObj.loopCenterY;
+                }
+            } else if (shipObj.phase === 'exit') {
+                shipObj.x += shipObj.speed * 3;
+                addExhaust(shipObj.x, shipObj.y);
+                drawShipShape(ctx, shipObj.x, shipObj.y);
+                drawExhaust(ctx);
+                if (shipObj.x > window.innerWidth + 200) shipObj = null;
+            }
+        }, 16);
+
+        // Spawn aléatoire rare
+        function tryRandSpawn() {
+            if (!shipObj && Math.random() < 0.002) spawnShip();
+            setTimeout(tryRandSpawn, 3000);
+        }
+        setTimeout(tryRandSpawn, 8000);
+        // ===== FIN VAISSEAU =====
+
+
+        function filterCatalog(query) {
+            const q = query.trim().toLowerCase();
+            const cards = document.querySelectorAll('#catalog-grid .product-card');
+            let found = 0;
+
+            cards.forEach(card => {
+                const name = card.querySelector('h3') ? card.querySelector('h3').textContent.toLowerCase() : '';
+                const desc = card.querySelector('p') ? card.querySelector('p').textContent.toLowerCase() : '';
+                if (q === '' || name.includes(q) || desc.includes(q)) {
+                    card.style.display = '';
+                    found++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('no-result').style.display = (found === 0 && q !== '') ? 'block' : 'none';
+        }
+    </script>
+
+    <!-- Zone secrète invisible coin bas droite -->
+    <div id="secret-zone" style="position:fixed; bottom:0; right:0; width:50px; height:50px; z-index:9999;"></div>
+
+    <!-- Modal code secret -->
+    <div id="secret-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#0a0e27; border:2px solid #00d4ff; border-radius:15px; padding:2rem; z-index:99999; text-align:center; box-shadow:0 0 40px rgba(0,212,255,0.5); min-width:280px;">
+        <p style="color:#00d4ff; font-size:1.1rem; font-weight:bold; margin-bottom:1rem; text-shadow:0 0 10px #00d4ff;">🔐 Code secret</p>
+        <input id="secret-input" type="password" placeholder="Entre le code..." maxlength="20"
+            style="width:100%; padding:0.7rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.8); color:#fff; font-size:1rem; outline:none; box-sizing:border-box; text-align:center;">
+        <div style="margin-top:1rem; display:flex; gap:0.5rem; justify-content:center;">
+            <button onclick="checkSecretCode()" style="background:linear-gradient(135deg,#00d4ff,#0066ff); color:#fff; border:none; padding:0.6rem 1.5rem; border-radius:50px; font-weight:bold; cursor:pointer; font-size:1rem;">OK</button>
+            <button onclick="document.getElementById('secret-modal').style.display='none'" style="background:transparent; color:#00d4ff; border:2px solid #00d4ff; padding:0.6rem 1.5rem; border-radius:50px; cursor:pointer; font-size:1rem;">Annuler</button>
+        </div>
+        <p id="secret-error" style="color:#ff0055; margin-top:0.8rem; display:none; font-weight:bold;">❌ Code incorrect</p>
+        <p id="secret-success" style="color:#00ff88; margin-top:0.8rem; display:none; font-weight:bold;">🚀 Lancement !</p>
+    </div>
+
+    <script>
+        // Zone secrète
+        document.getElementById('secret-zone').addEventListener('click', function() {
+            document.getElementById('secret-modal').style.display = 'block';
+            setTimeout(function() { document.getElementById('secret-input').focus(); }, 100);
+        });
+        document.getElementById('secret-zone').addEventListener('touchend', function(e) {
+            e.preventDefault();
+            document.getElementById('secret-modal').style.display = 'block';
+            setTimeout(function() { document.getElementById('secret-input').focus(); }, 100);
+        });
+
+        // Valider avec Entrée
+        document.getElementById('secret-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') checkSecretCode();
+            if (e.key === 'Escape') document.getElementById('secret-modal').style.display = 'none';
+        });
+
+        function checkSecretCode() {
+            var input = document.getElementById('secret-input');
+            var error = document.getElementById('secret-error');
+            var success = document.getElementById('secret-success');
+            if (input.value.toLowerCase() === 'nomar3d') {
+                error.style.display = 'none';
+                success.style.display = 'block';
+                input.value = '';
+                setTimeout(function() {
+                    document.getElementById('secret-modal').style.display = 'none';
+                    success.style.display = 'none';
+                    if (typeof window.forceSpawnShip === 'function') {
+                        window.forceSpawnShip();
+                    }
+                }, 800);
+            } else {
+                success.style.display = 'none';
+                error.style.display = 'block';
+                input.value = '';
+                setTimeout(function() { error.style.display = 'none'; }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>
