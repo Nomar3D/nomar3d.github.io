@@ -607,6 +607,24 @@
             flex-wrap: wrap;
         }
 
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff00ff 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 0 30px rgba(255, 0, 255, 0.3);
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 50px rgba(255, 0, 255, 0.5);
+        }
+
         .btn-secondary {
             display: inline-block;
             background: transparent;
@@ -1307,30 +1325,37 @@
         <!-- Section Compte -->
         <section id="compte" class="hidden" style="background:rgba(10,14,39,0.85); border-radius:15px;">
             <h2>👤 Mon Compte</h2>
-            <div id="login-section">
-                <div style="max-width:400px; margin:0 auto;">
-                    <input id="user-email" type="email" placeholder="Email..." 
-                        style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
-                    <input id="user-password" type="password" placeholder="Mot de passe..." 
-                        style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
-                    <div id="login-error" style="display:none; color:#ff0055; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
-                    <button onclick="login()" class="btn-primary" style="width:100%; margin-bottom:0.8rem;">Se connecter</button>
-                    <button onclick="showRegistration()" class="btn-secondary" style="width:100%;">Créer un compte</button>
-                </div>
+            <div id="login-section" style="max-width:400px; margin:0 auto;">
+                <input id="user-email" type="email" placeholder="Email..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <input id="user-password" type="password" placeholder="Mot de passe..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <div id="login-error" style="display:none; color:#ff0055; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
+                <button onclick="login()" class="btn-primary" style="width:100%; margin-bottom:0.8rem;">Se connecter</button>
+                <button onclick="showRegistration()" class="btn-secondary" style="width:100%;">Créer un compte</button>
             </div>
-            <div id="register-section" style="display:none;">
-                <div style="max-width:400px; margin:0 auto;">
-                    <input id="reg-email" type="email" placeholder="Email..." 
-                        style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
-                    <input id="reg-password" type="password" placeholder="Mot de passe (min. 6 caractères)..." 
-                        style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
-                    <div id="register-error" style="display:none; color:#ff0055; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
-                    <div id="register-success" style="display:none; color:#00ff88; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
-                    <button onclick="register()" class="btn-primary" style="width:100%; margin-bottom:0.8rem;">Créer mon compte</button>
-                    <button onclick="showLogin()" class="btn-secondary" style="width:100%;">Retour connexion</button>
-                </div>
+            <div id="registration-section" style="display:none; max-width:400px; margin:0 auto;">
+                <h3 style="text-align:center; color:#00d4ff; margin-bottom:1.5rem;">Créer un compte</h3>
+                <input id="register-email" type="email" placeholder="Email..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <input id="register-password" type="password" placeholder="Mot de passe (min. 6 caractères)..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <input id="register-confirm" type="password" placeholder="Confirmer le mot de passe..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <div id="register-message" style="display:none; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
+                <button onclick="requestRegistration()" class="btn-primary" style="width:100%; margin-bottom:0.8rem;">Créer mon compte</button>
+                <button onclick="showLogin()" class="btn-secondary" style="width:100%;">Retour connexion</button>
             </div>
-            <div id="user-profile" style="display:none; text-align:center;">
+            <div id="verification-section" style="display:none; max-width:400px; margin:0 auto; text-align:center;">
+                <h3 style="color:#00d4ff; margin-bottom:1rem;">✉️ Vérification email</h3>
+                <p style="color:#a0d4ff; margin-bottom:1rem;">Entre le code reçu par email :</p>
+                <input id="verify-code" type="text" placeholder="Code de vérification..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem; text-align:center; letter-spacing:0.3em;">
+                <div id="verify-message" style="display:none; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
+                <button onclick="verifyCode()" class="btn-primary" style="width:100%; margin-bottom:0.8rem;">Vérifier</button>
+                <button onclick="showLogin()" class="btn-secondary" style="width:100%;">Annuler</button>
+            </div>
+            <div id="user-profile" style="display:none; text-align:center; max-width:400px; margin:0 auto;">
                 <p style="color:#00d4ff; font-size:1.1rem; margin-bottom:1rem;">✅ Connecté en tant que <strong id="profile-email"></strong></p>
                 <button onclick="logout()" class="btn-danger" style="margin-top:1rem;">Se déconnecter</button>
             </div>
@@ -1433,6 +1458,14 @@
                 warning: "⚠️ Pour mettre la coque : rentre bien d'abord le haut et après le bas.",
                 price: '4€', 
                 images: ['https://i.ibb.co/5hh26wZX/IMG-2392.jpg', 'https://i.ibb.co/cSdQczWC/IMG-2391.jpg']
+            },
+            { 
+                id: 'produit9', 
+                emoji: '🎭', 
+                name: 'Figurine des traitres', 
+                description: 'Figurine imprimée en plastique noir de bonne qualité en PLA.', 
+                price: '4€', 
+                images: ['https://i.ibb.co/mfrhPWT/e05c11da-ce01-4021-abba-365ac53126ed.jpg']
             }
         ];
 
