@@ -1619,8 +1619,10 @@
             window.open(`mailto:lucas.nomme29@gmail.com?subject=${subject}&body=${body}`, '_blank');
         }
 
+        function verifyCode() { verifyAccount(); }
+
         function verifyAccount() {
-            const code = document.getElementById('verification-code').value.trim();
+            const code = document.getElementById('verify-code').value.trim();
             const messageElement = document.getElementById('verify-message');
             
             if (!pendingRegistration) {
@@ -1647,7 +1649,7 @@
             setTimeout(() => {
                 completeLogin(pendingRegistration.email);
                 pendingRegistration = null;
-                document.getElementById('verification-code').value = '';
+                document.getElementById('verify-code').value = '';
             }, 1500);
         }
 
