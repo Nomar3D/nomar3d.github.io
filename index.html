@@ -1693,10 +1693,19 @@
 
         function completeLogin(email) {
             userEmail = email;
-            document.getElementById('display-email').textContent = email;
-            document.getElementById('login-section').style.display = 'none';
-            document.getElementById('account-section').style.display = 'block';
-            document.getElementById('login-error').style.display = 'none';
+            // Cacher toutes les sous-sections
+            const sections = ['login-section', 'registration-section', 'verification-section'];
+            sections.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            // Afficher le profil
+            const profile = document.getElementById('user-profile');
+            const profileEmail = document.getElementById('profile-email');
+            if (profile) profile.style.display = 'block';
+            if (profileEmail) profileEmail.textContent = email;
+            const loginError = document.getElementById('login-error');
+            if (loginError) loginError.style.display = 'none';
             
             // Charger le panier sauvegardé
             loadCart();
@@ -1836,12 +1845,19 @@
             if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
                 userEmail = null;
                 cart = [];
-                document.getElementById('login-section').style.display = 'block';
-                document.getElementById('account-section').style.display = 'none';
-                document.getElementById('user-email').value = '';
-                document.getElementById('user-password').value = '';
-                document.getElementById('new-password').value = '';
-                document.getElementById('confirm-password').value = '';
+                // Afficher login, cacher profil
+                const loginSec = document.getElementById('login-section');
+                const profile = document.getElementById('user-profile');
+                const regSec = document.getElementById('registration-section');
+                const verifSec = document.getElementById('verification-section');
+                if (loginSec) loginSec.style.display = 'block';
+                if (profile) profile.style.display = 'none';
+                if (regSec) regSec.style.display = 'none';
+                if (verifSec) verifSec.style.display = 'none';
+                const emailInput = document.getElementById('user-email');
+                const passInput = document.getElementById('user-password');
+                if (emailInput) emailInput.value = '';
+                if (passInput) passInput.value = '';
                 updateCartCount();
                 updateCartDisplay();
             }
