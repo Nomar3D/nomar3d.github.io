@@ -426,8 +426,14 @@
         .feature {
             text-align: center;
             padding: 1.5rem;
-            background: #f8f9fa;
+            background: rgba(0, 20, 60, 0.6);
             border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .feature p {
+            color: #e0e0e0;
+            font-size: 0.95rem;
         }
 
         .feature-icon {
@@ -436,7 +442,7 @@
         }
 
         .feature h3 {
-            color: #1e5bb8;
+            color: #00d4ff;
             margin-bottom: 0.5rem;
             font-size: 1.2rem;
         }
@@ -1215,19 +1221,49 @@
                     <h3>📦 Petite</h3>
                     <div class="price">5€</div>
                     <p>Une surprise imprimée en 3D</p>
-                    <a href="/cdn-cgi/l/email-protection#5539203634267b3b3a383830676c153238343c397b363a386a2620373f30362168163a3838343b313075173a96fb213075182c262196fd2730750530213c213073373a312c68173a3b3f3a2027797065117065147065117065141f3075263a203d343c213075363a3838343b31302775203b3075173a96fb213075182c262196fd2730750530213c2130757d60b7d7f97c7b706511706514706511706514183a3b753b3a38756f706511706514183a3b753431273026263075313075393c2327343c263a3b756f706511706514183a3b752196fc3996fc253d3a3b30756f706511706514706511706514183027363c7574" class="btn">Commander</a>
+                    <button onclick="commanderBoite('Petite', '5')" class="btn">Commander</button>
                 </div>
                 <div class="mystery-box">
                     <h3>📦 Moyenne</h3>
                     <div class="price">10€</div>
                     <p>Plusieurs objets surprises</p>
-                    <a href="/cdn-cgi/l/email-protection#107c657371633e7e7f7d7d75222950777d71797c3e737f7d2f6365727a7573642d537f7d7d717e747530527fd3be6475305d696364d3b86275305d7f69757e7e7536727f74692d527f7e7a7f65623c3520543520513520543520515a7530637f65787179647530737f7d7d717e74756230657e7530527fd3be6475305d696364d3b86275305d7f69757e7e7530382120f292bc393e3520543520513520543520515d7f7e307e7f7d302a3520543520515d7f7e3071746275636375307475307c7966627179637f7e302a3520543520515d7f7e3064d3b97cd3b960787f7e75302a3520543520513520543520515d756273793031" class="btn">Commander</a>
+                    <button onclick="commanderBoite('Moyenne', '10')" class="btn">Commander</button>
                 </div>
                 <div class="mystery-box">
                     <h3>📦 Grande</h3>
                     <div class="price">15€</div>
                     <p>La boîte ultime !</p>
-                    <a href="/cdn-cgi/l/email-protection#dfb3aabcbeacf1b1b0b2b2baede69fb8b2beb6b3f1bcb0b2e0acaabdb5babcabe29cb0b2b2beb1bbbaff9db01c71abbaff92a6acab1c77adbaff98adbeb1bbbaf9bdb0bba6e29db0b1b5b0aaadf3faef9bfaef9efaef9bfaef9e95baffacb0aab7beb6abbaffbcb0b2b2beb1bbbaadffaab1baff9db01c71abbaff92a6acab1c77adbaff98adbeb1bbbafff7eeea3d5d73f6f1faef9bfaef9efaef9bfaef9e92b0b1ffb1b0b2ffe5faef9bfaef9e92b0b1ffbebbadbaacacbaffbbbaffb3b6a9adbeb6acb0b1ffe5faef9bfaef9e92b0b1ffab1c76b31c76afb7b0b1baffe5faef9bfaef9efaef9bfaef9e92baadbcb6fffe" class="btn">Commander</a>
+                    <button onclick="commanderBoite('Grande', '15')" class="btn">Commander</button>
+                </div>
+            </div>
+
+            <!-- Modal paiement boîte mystère -->
+            <div id="mystere-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; overflow-y:auto;">
+                <div style="max-width:480px; margin:3rem auto; background:#0a0e27; border:2px solid #00d4ff; border-radius:20px; padding:2rem; box-shadow:0 0 50px rgba(0,212,255,0.4);">
+                    <h3 id="mystere-titre" style="color:#00d4ff; text-align:center; margin-bottom:0.5rem; font-size:1.4rem;"></h3>
+                    <p id="mystere-prix" style="color:#00ff88; text-align:center; font-size:1.8rem; font-weight:bold; margin-bottom:1.5rem;"></p>
+                    
+                    <!-- Infos client -->
+                    <div style="margin-bottom:1.2rem;">
+                        <input id="mystere-nom" type="text" placeholder="Votre prénom et nom..." 
+                            style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.8); color:#fff; outline:none; box-sizing:border-box; font-size:1rem; margin-bottom:0.8rem;">
+                        <input id="mystere-email" type="email" placeholder="Votre email..." 
+                            style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.8); color:#fff; outline:none; box-sizing:border-box; font-size:1rem; margin-bottom:0.8rem;">
+                        <input id="mystere-adresse" type="text" placeholder="Votre adresse de livraison..." 
+                            style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.8); color:#fff; outline:none; box-sizing:border-box; font-size:1rem;">
+                    </div>
+
+                    <div id="mystere-form-error" style="display:none; color:#ff0055; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
+
+                    <!-- Badge sécurité -->
+                    <div style="text-align:center; padding:0.6rem; background:rgba(0,255,100,0.08); border:1px solid rgba(0,255,100,0.3); border-radius:10px; margin-bottom:1.2rem;">
+                        <span style="color:#00ff88; font-size:0.9rem;">🔒 Paiement 100% sécurisé via PayPal</span>
+                    </div>
+
+                    <!-- Bouton PayPal -->
+                    <div id="mystere-paypal-container"></div>
+
+                    <button onclick="fermerModalMystere()" class="btn-secondary" style="width:100%; margin-top:1rem;">Annuler</button>
                 </div>
             </div>
         </section>
@@ -2704,6 +2740,87 @@
                 setTimeout(function() { error.style.display = 'none'; }, 2000);
             }
         }
+
+        // ===== BOÎTES MYSTÈRE =====
+        var currentBoite = null;
+
+        function commanderBoite(taille, prix) {
+            currentBoite = { taille: taille, prix: prix };
+            document.getElementById('mystere-titre').textContent = '📦 Boîte Mystère ' + taille;
+            document.getElementById('mystere-prix').textContent = prix + '€';
+            document.getElementById('mystere-modal').style.display = 'block';
+            document.getElementById('mystere-paypal-container').innerHTML = '';
+            document.getElementById('mystere-form-error').style.display = 'none';
+            
+            // Pré-remplir email si connecté
+            if (userEmail) document.getElementById('mystere-email').value = userEmail;
+
+            // Charger le bouton PayPal pour la boîte
+            setTimeout(function() { renderMysterePayPal(); }, 200);
+        }
+
+        function fermerModalMystere() {
+            document.getElementById('mystere-modal').style.display = 'none';
+            currentBoite = null;
+        }
+
+        function renderMysterePayPal() {
+            if (!currentBoite) return;
+            var container = document.getElementById('mystere-paypal-container');
+            container.innerHTML = '';
+
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    var nom = document.getElementById('mystere-nom').value.trim();
+                    var email = document.getElementById('mystere-email').value.trim();
+                    var adresse = document.getElementById('mystere-adresse').value.trim();
+                    var erreur = document.getElementById('mystere-form-error');
+
+                    if (!nom) { erreur.textContent = '⚠️ Veuillez entrer votre nom'; erreur.style.display = 'block'; return Promise.reject(); }
+                    if (!email || !email.includes('@')) { erreur.textContent = '⚠️ Email invalide'; erreur.style.display = 'block'; return Promise.reject(); }
+                    if (!adresse) { erreur.textContent = '⚠️ Veuillez entrer votre adresse'; erreur.style.display = 'block'; return Promise.reject(); }
+                    erreur.style.display = 'none';
+
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: { value: currentBoite.prix, currency_code: 'EUR' },
+                            description: 'Boîte Mystère ' + currentBoite.taille + ' - Nomar3D'
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        var nom = document.getElementById('mystere-nom').value.trim();
+                        var email = document.getElementById('mystere-email').value.trim();
+                        var adresse = document.getElementById('mystere-adresse').value.trim();
+
+                        // Envoyer mail de notification à Lucas
+                        emailjs.send('service_yfhuws5', 'template_cdg19jo', {
+                            to_email: 'lucas.nomme29@gmail.com',
+                            email: 'lucas.nomme29@gmail.com',
+                            subject: '🎁 Nouvelle commande Boîte Mystère ' + currentBoite.taille,
+                            message: 'Nouvelle commande payée !\n\nBoîte : ' + currentBoite.taille + ' (' + currentBoite.prix + '€)\nClient : ' + nom + '\nEmail : ' + email + '\nAdresse : ' + adresse + '\nTransaction : ' + details.id
+                        });
+
+                        // Envoyer mail de confirmation au client
+                        emailjs.send('service_yfhuws5', 'template_cdg19jo', {
+                            to_email: email,
+                            email: email,
+                            subject: '✅ Confirmation commande Nomar3D',
+                            message: 'Bonjour ' + nom + ',\n\nMerci pour votre commande !\n\nBoîte Mystère ' + currentBoite.taille + ' : ' + currentBoite.prix + '€\nAdresse de livraison : ' + adresse + '\n\nVous serez contacté prochainement pour la livraison.\n\nNomar3D'
+                        });
+
+                        fermerModalMystere();
+                        alert('✅ Paiement réussi ! Vous allez recevoir un email de confirmation. Merci !');
+                    });
+                },
+                onError: function(err) {
+                    alert('❌ Erreur lors du paiement. Veuillez réessayer.');
+                }
+            }).render('#mystere-paypal-container');
+        }
+        // ===== FIN BOÎTES MYSTÈRE =====
+
     </script>
 </body>
 </html>
