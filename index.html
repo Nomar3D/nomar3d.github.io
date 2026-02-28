@@ -1239,7 +1239,7 @@
 
             <!-- Modal paiement boîte mystère -->
             <div id="mystere-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; overflow-y:auto;">
-                <div style="max-width:480px; margin:3rem auto; background:#0a0e27; border:2px solid #00d4ff; border-radius:20px; padding:2rem; box-shadow:0 0 50px rgba(0,212,255,0.4);">
+                <div style="max-width:480px; margin:3rem auto; background:#1a2a5e; border:2px solid #00d4ff; border-radius:20px; padding:2rem; box-shadow:0 0 50px rgba(0,212,255,0.4);">
                     <h3 id="mystere-titre" style="color:#00d4ff; text-align:center; margin-bottom:0.5rem; font-size:1.4rem;"></h3>
                     <p id="mystere-prix" style="color:#00ff88; text-align:center; font-size:1.8rem; font-weight:bold; margin-bottom:1.5rem;"></p>
                     
@@ -2756,7 +2756,17 @@
             if (userEmail) document.getElementById('mystere-email').value = userEmail;
 
             // Charger le bouton PayPal pour la boîte
-            setTimeout(function() { renderMysterePayPal(); }, 200);
+            var tries = 0;
+            var waitPaypal = setInterval(function() {
+                tries++;
+                if (typeof paypal !== 'undefined') {
+                    clearInterval(waitPaypal);
+                    renderMysterePayPal();
+                } else if (tries > 20) {
+                    clearInterval(waitPaypal);
+                    document.getElementById('mystere-paypal-container').innerHTML = '<p style="color:#ff0055; text-align:center;">❌ Erreur chargement PayPal. Rechargez la page.</p>';
+                }
+            }, 200);
         }
 
         function fermerModalMystere() {
