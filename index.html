@@ -1239,7 +1239,7 @@
 
             <!-- Modal paiement boîte mystère -->
             <div id="mystere-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; overflow-y:auto;">
-                <div style="max-width:480px; margin:3rem auto; background:#1a2a5e; border:2px solid #00d4ff; border-radius:20px; padding:2rem; box-shadow:0 0 50px rgba(0,212,255,0.4);">
+                <div style="max-width:480px; width:90%; margin:auto; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#1a2a5e; border:2px solid #00d4ff; border-radius:20px; padding:2rem; box-shadow:0 0 50px rgba(0,212,255,0.4);">
                     <h3 id="mystere-titre" style="color:#00d4ff; text-align:center; margin-bottom:0.5rem; font-size:1.4rem;"></h3>
                     <p id="mystere-prix" style="color:#00ff88; text-align:center; font-size:1.8rem; font-weight:bold; margin-bottom:1.5rem;"></p>
                     
@@ -1372,6 +1372,8 @@
             </div>
             <div id="registration-section" style="display:none; max-width:400px; margin:0 auto;">
                 <h3 style="text-align:center; color:#00d4ff; margin-bottom:1.5rem;">Créer un compte</h3>
+                <input id="register-prenom" type="text" placeholder="Votre prénom..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
                 <input id="register-email" type="email" placeholder="Email..." 
                     style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
                 <input id="register-password" type="password" placeholder="Mot de passe (min. 6 caractères)..." 
@@ -1391,9 +1393,60 @@
                 <button onclick="verifyCode()" class="btn-primary" style="width:100%; margin-bottom:0.8rem;">Vérifier</button>
                 <button onclick="showLogin()" class="btn-secondary" style="width:100%;">Annuler</button>
             </div>
-            <div id="user-profile" style="display:none; text-align:center; max-width:400px; margin:0 auto;">
-                <p style="color:#00d4ff; font-size:1.1rem; margin-bottom:1rem;">✅ Connecté en tant que <strong id="profile-email"></strong></p>
-                <button onclick="logout()" class="btn-danger" style="margin-top:1rem;">Se déconnecter</button>
+            <div id="banned-screen" style="display:none; max-width:500px; margin:0 auto;"></div>
+            <div id="user-profile" style="display:none; text-align:center; max-width:500px; margin:0 auto;">
+                <p style="color:#00d4ff; font-size:1.1rem; margin-bottom:0.5rem;">✅ Connecté en tant que <strong id="profile-email"></strong></p>
+                <p id="profile-prenom" style="color:#a0d4ff; margin-bottom:1rem;"></p>
+                <!-- Onglet admin Ban (visible seulement pour lucas) -->
+                <div id="admin-panel" style="display:none; margin:1.5rem 0; text-align:left;">
+                    <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem; justify-content:center;">
+                        <button onclick="showAdminTab('users')" id="tab-users" class="btn-primary" style="padding:0.6rem 1.2rem;">👥 Membres</button>
+                        <button onclick="showAdminTab('bans')" id="tab-bans" class="btn-secondary" style="padding:0.6rem 1.2rem;">🔨 Bans</button>
+                    </div>
+
+                    <!-- Liste des membres -->
+                    <div id="admin-users" style="display:block;">
+                        <h3 style="color:#00d4ff; margin-bottom:1rem; text-align:center;">👥 Membres inscrits</h3>
+                        <div id="users-list"></div>
+                    </div>
+
+                    <!-- Liste des bans -->
+                    <div id="admin-bans" style="display:none;">
+                        <h3 style="color:#ff0055; margin-bottom:1rem; text-align:center;">🔨 Bans actifs</h3>
+                        <div id="bans-list"></div>
+                    </div>
+
+                    <!-- Modal ban -->
+                    <div id="ban-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999;">
+                        <div style="max-width:420px; background:#0a0e27; border:2px solid #ff0055; border-radius:20px; padding:2rem; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);">
+                            <h3 style="color:#ff0055; text-align:center; margin-bottom:1rem;">🔨 Bannir <span id="ban-target-name"></span></h3>
+                            <p style="color:#a0d4ff; text-align:center; margin-bottom:1.5rem; font-size:0.9rem;" id="ban-target-email-display"></p>
+                            <div style="margin-bottom:1rem;">
+                                <label style="color:#a0d4ff; display:block; margin-bottom:0.5rem;">Type de ban :</label>
+                                <select id="ban-type" onchange="toggleBanDuration()" style="width:100%; padding:0.7rem 1rem; border-radius:50px; border:2px solid #ff0055; background:rgba(0,20,60,0.8); color:#fff; outline:none; font-size:1rem;">
+                                    <option value="temporaire">⏱️ Temporaire</option>
+                                    <option value="definitif">🚫 Définitif</option>
+                                </select>
+                            </div>
+                            <div id="ban-duration-section" style="margin-bottom:1rem;">
+                                <label style="color:#a0d4ff; display:block; margin-bottom:0.5rem;">Durée :</label>
+                                <div style="display:flex; gap:0.5rem; align-items:center;">
+                                    <input id="ban-duration" type="number" min="1" value="1" style="width:80px; padding:0.7rem; border-radius:50px; border:2px solid #ff0055; background:rgba(0,20,60,0.8); color:#fff; outline:none; text-align:center; font-size:1rem;">
+                                    <select id="ban-unit" style="flex:1; padding:0.7rem 1rem; border-radius:50px; border:2px solid #ff0055; background:rgba(0,20,60,0.8); color:#fff; outline:none; font-size:1rem;">
+                                        <option value="minutes">minutes</option>
+                                        <option value="heures">heures</option>
+                                        <option value="jours" selected>jours</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                                <button onclick="confirmBan()" style="flex:1; background:linear-gradient(135deg,#ff0055,#ff6600); color:#fff; border:none; padding:0.8rem; border-radius:50px; font-weight:bold; cursor:pointer; font-size:1rem;">🔨 Bannir</button>
+                                <button onclick="document.getElementById('ban-modal').style.display='none'" class="btn-secondary" style="flex:1;">Annuler</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="logout()" class="btn-danger" style="margin-top:1rem; width:100%;">Se déconnecter</button>
             </div>
         </section>
 
@@ -1586,11 +1639,19 @@
         }
 
         function requestRegistration() {
+            const prenom = document.getElementById('register-prenom').value.trim();
             const email = document.getElementById('register-email').value.trim();
             const password = document.getElementById('register-password').value;
             const confirm = document.getElementById('register-confirm').value;
             const messageElement = document.getElementById('register-message');
             
+            if (!prenom) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Veuillez entrer votre prénom';
+                messageElement.style.display = 'block';
+                return;
+            }
+
             if (!email || !email.includes('@')) {
                 messageElement.style.color = '#ff0055';
                 messageElement.textContent = '⚠️ Email invalide';
@@ -1623,6 +1684,7 @@
             pendingRegistration = {
                 email: email,
                 password: password,
+                prenom: prenom,
                 code: '2983'
             };
             
@@ -1677,6 +1739,13 @@
             
             localStorage.setItem('password_' + pendingRegistration.email, pendingRegistration.password);
             localStorage.setItem('verified_' + pendingRegistration.email, 'true');
+            localStorage.setItem('prenom_' + pendingRegistration.email, pendingRegistration.prenom || '');
+            // Ajouter à la liste des membres
+            const members = JSON.parse(localStorage.getItem('nomar3d_members') || '[]');
+            if (!members.find(m => m.email === pendingRegistration.email)) {
+                members.push({ email: pendingRegistration.email, prenom: pendingRegistration.prenom || '', date: new Date().toLocaleDateString('fr-FR') });
+                localStorage.setItem('nomar3d_members', JSON.stringify(members));
+            }
             
             messageElement.style.color = '#00ff88';
             messageElement.textContent = '✅ Compte créé avec succès ! Connexion...';
@@ -1728,6 +1797,23 @@
         }
 
         function completeLogin(email) {
+            // Vérifier si banni
+            const banInfo = JSON.parse(localStorage.getItem('ban_' + email) || 'null');
+            if (banInfo) {
+                if (banInfo.type === 'definitif') {
+                    showBannedScreen(true, null, email);
+                    return;
+                } else {
+                    const remaining = banInfo.until - Date.now();
+                    if (remaining > 0) {
+                        showBannedScreen(false, banInfo.until, email);
+                        return;
+                    } else {
+                        localStorage.removeItem('ban_' + email);
+                    }
+                }
+            }
+
             userEmail = email;
             // Cacher toutes les sous-sections
             const sections = ['login-section', 'registration-section', 'verification-section'];
@@ -1738,14 +1824,52 @@
             // Afficher le profil
             const profile = document.getElementById('user-profile');
             const profileEmail = document.getElementById('profile-email');
+            const profilePrenom = document.getElementById('profile-prenom');
             if (profile) profile.style.display = 'block';
             if (profileEmail) profileEmail.textContent = email;
+            const prenom = localStorage.getItem('prenom_' + email);
+            if (profilePrenom && prenom) profilePrenom.textContent = 'Bonjour ' + prenom + ' 👋';
             const loginError = document.getElementById('login-error');
             if (loginError) loginError.style.display = 'none';
+
+            // Afficher panel admin si c'est Lucas
+            if (email === ADMIN_EMAIL) {
+                const adminPanel = document.getElementById('admin-panel');
+                if (adminPanel) { adminPanel.style.display = 'block'; loadAdminUsers(); }
+            }
             
             // Charger le panier sauvegardé
             loadCart();
             updateCartCount();
+        }
+
+        // Écran de ban
+        function showBannedScreen(definitif, until, email) {
+            document.querySelectorAll('#compte > div').forEach(d => d.style.display = 'none');
+            const bannedDiv = document.getElementById('banned-screen');
+            if (bannedDiv) {
+                bannedDiv.style.display = 'block';
+                if (definitif) {
+                    bannedDiv.innerHTML = '<div style="text-align:center; padding:2rem;"><p style="font-size:3rem;">🚫</p><h2 style="color:#ff0055; margin-bottom:1rem;">Tu t\'es fait ban</h2><p style="color:#a0d4ff; margin-bottom:1.5rem;">Envoie moi un mail à <a href="mailto:lucas.nomme29@gmail.com" style="color:#00d4ff;">lucas.nomme29@gmail.com</a> si je me suis trompé.</p></div>';
+                } else {
+                    bannedDiv.innerHTML = '<div style="text-align:center; padding:2rem;"><p style="font-size:3rem;">⏱️</p><h2 style="color:#ff6600; margin-bottom:1rem;">Compte suspendu temporairement</h2><p style="color:#a0d4ff; margin-bottom:1rem;">Temps restant :</p><p id="ban-countdown" style="color:#ff6600; font-size:2rem; font-weight:bold; font-family:monospace;"></p><p style="color:#a0d4ff; margin-top:1rem; font-size:0.9rem;">Envoie un mail à <a href="mailto:lucas.nomme29@gmail.com" style="color:#00d4ff;">lucas.nomme29@gmail.com</a> si c\'est une erreur.</p></div>';
+                    // Minuteur
+                    var countdown = setInterval(function() {
+                        var remaining = until - Date.now();
+                        if (remaining <= 0) {
+                            clearInterval(countdown);
+                            localStorage.removeItem('ban_' + email);
+                            location.reload();
+                            return;
+                        }
+                        var h = Math.floor(remaining / 3600000);
+                        var m = Math.floor((remaining % 3600000) / 60000);
+                        var s = Math.floor((remaining % 60000) / 1000);
+                        var el = document.getElementById('ban-countdown');
+                        if (el) el.textContent = (h > 0 ? h + 'h ' : '') + (m > 0 ? m + 'm ' : '') + s + 's';
+                    }, 1000);
+                }
+            }
         }
 
         function applyPromoCode() {
@@ -2830,6 +2954,130 @@
             }).render('#mystere-paypal-container');
         }
         // ===== FIN BOÎTES MYSTÈRE =====
+
+
+        // ===== PANEL ADMIN BAN =====
+        var banTargetEmail = '';
+
+        function showAdminTab(tab) {
+            document.getElementById('admin-users').style.display = tab === 'users' ? 'block' : 'none';
+            document.getElementById('admin-bans').style.display = tab === 'bans' ? 'block' : 'none';
+            document.getElementById('tab-users').className = tab === 'users' ? 'btn-primary' : 'btn-secondary';
+            document.getElementById('tab-bans').className = tab === 'bans' ? 'btn-primary' : 'btn-secondary';
+            document.getElementById('tab-users').style.padding = '0.6rem 1.2rem';
+            document.getElementById('tab-bans').style.padding = '0.6rem 1.2rem';
+            if (tab === 'users') loadAdminUsers();
+            if (tab === 'bans') loadAdminBans();
+        }
+
+        function makeUserCard(m) {
+            var ban = JSON.parse(localStorage.getItem('ban_' + m.email) || 'null');
+            var isBanned = ban && (ban.type === 'definitif' || ban.until > Date.now());
+            var div = document.createElement('div');
+            div.style.cssText = 'background:rgba(0,20,60,0.6);border:2px solid ' + (isBanned ? '#ff0055' : 'rgba(0,212,255,0.3)') + ';border-radius:12px;padding:1rem;margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;';
+            var info = document.createElement('div');
+            info.innerHTML = '<p style="color:#fff;font-weight:bold;margin:0 0 4px;">' + (m.prenom || '?') + ' &nbsp;<span style="color:#a0d4ff;font-weight:normal;font-size:0.85rem;">' + m.email + '</span>' + (isBanned ? ' <span style="color:#ff0055;">Banni</span>' : '') + '</p><p style="color:#a0d4ff;font-size:0.8rem;margin:0;">Inscrit le ' + (m.date || '?') + '</p>';
+            var btn = document.createElement('button');
+            if (isBanned) {
+                btn.textContent = 'Debannir';
+                btn.style.cssText = 'background:linear-gradient(135deg,#00ff88,#00d4ff);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:50px;cursor:pointer;font-weight:bold;';
+                btn.onclick = function() { unbanUser(m.email); };
+            } else {
+                btn.textContent = 'Bannir';
+                btn.style.cssText = 'background:linear-gradient(135deg,#ff0055,#ff6600);color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:50px;cursor:pointer;font-weight:bold;';
+                btn.onclick = function() { openBanModal(m.email, m.prenom || m.email); };
+            }
+            div.appendChild(info);
+            div.appendChild(btn);
+            return div;
+        }
+
+        function loadAdminUsers() {
+            var members = JSON.parse(localStorage.getItem('nomar3d_members') || '[]');
+            var list = document.getElementById('users-list');
+            if (!list) return;
+            list.innerHTML = '';
+            if (members.length === 0) {
+                list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Aucun membre inscrit pour le moment.</p>';
+                return;
+            }
+            members.forEach(function(m) { list.appendChild(makeUserCard(m)); });
+        }
+
+        function loadAdminBans() {
+            var members = JSON.parse(localStorage.getItem('nomar3d_members') || '[]');
+            var list = document.getElementById('bans-list');
+            if (!list) return;
+            list.innerHTML = '';
+            var banned = members.filter(function(m) {
+                var b = JSON.parse(localStorage.getItem('ban_' + m.email) || 'null');
+                return b && (b.type === 'definitif' || b.until > Date.now());
+            });
+            if (banned.length === 0) {
+                list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Aucun ban actif.</p>';
+                return;
+            }
+            banned.forEach(function(m) {
+                var b = JSON.parse(localStorage.getItem('ban_' + m.email));
+                var info = b.type === 'definitif' ? 'Definitif' : 'Expire le ' + new Date(b.until).toLocaleString('fr-FR');
+                var div = document.createElement('div');
+                div.style.cssText = 'background:rgba(255,0,85,0.1);border:2px solid #ff0055;border-radius:12px;padding:1rem;margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;';
+                var infoDiv = document.createElement('div');
+                infoDiv.innerHTML = '<p style="color:#fff;font-weight:bold;margin:0 0 4px;">' + (m.prenom || '?') + ' <span style="color:#a0d4ff;font-size:0.85rem;">' + m.email + '</span></p><p style="color:#ff6600;font-size:0.85rem;margin:0;">' + info + '</p>';
+                var btn = document.createElement('button');
+                btn.textContent = 'Debannir';
+                btn.style.cssText = 'background:linear-gradient(135deg,#00ff88,#00d4ff);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:50px;cursor:pointer;font-weight:bold;';
+                btn.onclick = function() { unbanUser(m.email); };
+                div.appendChild(infoDiv);
+                div.appendChild(btn);
+                list.appendChild(div);
+            });
+        }
+
+        function openBanModal(email, prenom) {
+            banTargetEmail = email;
+            document.getElementById('ban-target-name').textContent = prenom;
+            document.getElementById('ban-target-email-display').textContent = email;
+            document.getElementById('ban-modal').style.display = 'block';
+            document.getElementById('ban-type').value = 'temporaire';
+            document.getElementById('ban-duration-section').style.display = 'block';
+            document.getElementById('ban-duration').value = 1;
+            document.getElementById('ban-unit').value = 'jours';
+        }
+
+        function toggleBanDuration() {
+            const type = document.getElementById('ban-type').value;
+            document.getElementById('ban-duration-section').style.display = type === 'temporaire' ? 'block' : 'none';
+        }
+
+        function confirmBan() {
+            if (!banTargetEmail) return;
+            const type = document.getElementById('ban-type').value;
+            var banData;
+            if (type === 'definitif') {
+                banData = { type: 'definitif' };
+            } else {
+                const duration = parseInt(document.getElementById('ban-duration').value) || 1;
+                const unit = document.getElementById('ban-unit').value;
+                var ms = duration;
+                if (unit === 'minutes') ms *= 60 * 1000;
+                else if (unit === 'heures') ms *= 3600 * 1000;
+                else ms *= 86400 * 1000;
+                banData = { type: 'temporaire', until: Date.now() + ms };
+            }
+            localStorage.setItem('ban_' + banTargetEmail, JSON.stringify(banData));
+            document.getElementById('ban-modal').style.display = 'none';
+            loadAdminUsers();
+            alert('✅ ' + banTargetEmail + ' a été banni !');
+        }
+
+        function unbanUser(email) {
+            localStorage.removeItem('ban_' + email);
+            loadAdminUsers();
+            loadAdminBans();
+            alert('✅ ' + email + ' a été débanni !');
+        }
+        // ===== FIN PANEL ADMIN =====
 
     </script>
 </body>
