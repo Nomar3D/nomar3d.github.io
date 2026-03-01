@@ -1,0 +1,3117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nomar3D - Impressions 3D</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #e0e0e0;
+            background: #0a0e27;
+        }
+
+        header {
+            background: #0a0e27;
+            color: white;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 200, 255, 0.5);
+            border-bottom: 2px solid #00d4ff;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+            text-shadow: 
+                0 0 10px #00d4ff,
+                0 0 20px #00d4ff,
+                0 0 30px #00d4ff,
+                0 0 40px #0099ff;
+            animation: neonPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes neonPulse {
+            0%, 100% {
+                text-shadow: 
+                    0 0 10px #00d4ff,
+                    0 0 20px #00d4ff,
+                    0 0 30px #00d4ff,
+                    0 0 40px #0099ff;
+            }
+            50% {
+                text-shadow: 
+                    0 0 5px #00d4ff,
+                    0 0 10px #00d4ff,
+                    0 0 15px #00d4ff,
+                    0 0 20px #0099ff;
+            }
+        }
+
+        .menu-toggle {
+            background: none;
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            box-shadow: 
+                0 0 10px #00d4ff,
+                inset 0 0 10px rgba(0, 212, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .menu-toggle:hover {
+            box-shadow: 
+                0 0 20px #00d4ff,
+                0 0 30px #00d4ff,
+                inset 0 0 15px rgba(0, 212, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        nav {
+            background: #0a0e27;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            border-top: 1px solid rgba(0, 212, 255, 0.3);
+        }
+
+        nav.active {
+            max-height: 500px;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav li {
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        nav a {
+            color: #00d4ff;
+            text-decoration: none;
+            display: block;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        nav a:hover {
+            background: rgba(0, 212, 255, 0.1);
+            text-shadow: 0 0 10px #00d4ff;
+            padding-left: 2rem;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: #00d4ff;
+            transform: scaleY(0);
+            transition: transform 0.3s;
+            box-shadow: 0 0 10px #00d4ff;
+        }
+
+        nav a:hover::before {
+            transform: scaleY(1);
+        }
+
+        main {
+            margin-top: 60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        section {
+            padding: 2rem 1.5rem;
+            min-height: calc(100vh - 60px);
+            padding-bottom: 4rem;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #00d4ff;
+            text-shadow: 
+                0 0 10px #00d4ff,
+                0 0 20px #00d4ff,
+                0 0 30px #0099ff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: #a0d8f1;
+            margin-bottom: 2rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+        }
+
+        h2 {
+            text-align: center;
+            color: #00d4ff;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-shadow: 
+                0 0 10px #00d4ff,
+                0 0 20px #0099ff;
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .catalog-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .product-card {
+                padding: 1rem;
+                min-height: 200px;
+            }
+            
+            .product-image {
+                height: 120px;
+            }
+        }
+
+        .product-card {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 
+                0 3px 10px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(0, 212, 255, 0.2),
+                inset 0 0 20px rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            -webkit-tap-highlight-color: rgba(0, 212, 255, 0.3);
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+                .product-card:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 35px rgba(0, 212, 255, 0.7), 0 0 60px rgba(0, 100, 255, 0.3);
+            border-color: #00d4ff;
+        }
+        .product-card:active {
+            transform: scale(0.98);
+            box-shadow: 
+                0 2px 8px rgba(0, 212, 255, 0.5),
+                0 0 20px rgba(0, 212, 255, 0.4),
+                inset 0 0 25px rgba(0, 212, 255, 0.15);
+        }
+
+        .product-card * {
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .product-card h3 {
+            color: #00d4ff;
+        }
+
+        .product-card p {
+            color: #a0d8f1;
+        }
+
+        .product-emoji {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            color: #00ff88;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .cash-discount {
+            color: #ffcc00;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            text-shadow: 0 0 8px rgba(255, 204, 0, 0.5);
+        }
+
+        .video-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #00d4ff;
+            box-shadow: 
+                0 5px 20px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 177.78%; /* Ratio pour YouTube Shorts (9:16) */
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            background: #000;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        @media (max-width: 768px) {
+            .video-container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+        }
+
+        .product-card h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mystery-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .mystery-box {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 
+                0 5px 15px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(0, 212, 255, 0.3),
+                inset 0 0 30px rgba(0, 212, 255, 0.05);
+            border: 2px solid #00d4ff;
+            transition: all 0.3s;
+        }
+
+        .mystery-box:hover {
+            transform: scale(1.03);
+            box-shadow: 
+                0 8px 25px rgba(0, 212, 255, 0.5),
+                0 0 50px rgba(0, 212, 255, 0.4),
+                inset 0 0 40px rgba(0, 212, 255, 0.1);
+        }
+
+        .mystery-box h3 {
+            color: #00d4ff;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+
+        .mystery-box p {
+            color: #a0d8f1;
+        }
+
+        .price {
+            font-size: 2rem;
+            color: #ff00ff;
+            font-weight: bold;
+            margin: 1rem 0;
+            text-shadow: 
+                0 0 10px #ff00ff,
+                0 0 20px #ff00ff,
+                0 0 30px #ff00ff;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff00ff 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            margin-top: 1rem;
+            font-weight: bold;
+            box-shadow: 
+                0 0 20px rgba(0, 212, 255, 0.5),
+                0 0 30px rgba(255, 0, 255, 0.5);
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 0 30px rgba(0, 212, 255, 0.7),
+                0 0 50px rgba(255, 0, 255, 0.7);
+        }
+
+        .features {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(5, 15, 50, 0.95);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .feature p {
+            color: #e0e0e0;
+            font-size: 0.95rem;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature h3 {
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .contact-info {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 
+                0 3px 15px rgba(0, 0, 0, 0.5),
+                0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .contact-info p {
+            font-size: 1rem;
+            margin: 1rem 0;
+            color: #a0d8f1;
+        }
+
+        .contact-info a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(0, 212, 255, 0.5);
+            transition: all 0.3s;
+        }
+
+        .contact-info a:hover {
+            text-shadow: 0 0 15px #00d4ff;
+        }
+
+        footer {
+            position: relative;
+            z-index: 1;
+            background: #0a0e27;
+            color: #00d4ff;
+            text-align: center;
+            padding: 2rem 1rem;
+            border-top: 2px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 -2px 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .product-detail {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            border: 2px solid #00d4ff;
+            box-shadow: 
+                0 5px 20px rgba(0, 0, 0, 0.5),
+                0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .product-detail-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .product-detail-image:hover {
+            transform: scale(1.05);
+        }
+
+        .image-gallery {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+        }
+
+        .gallery-thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .gallery-thumbnail:hover {
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        .gallery-thumbnail.active {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+        }
+
+        .image-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-modal.active {
+            display: flex;
+        }
+
+        .modal-image {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #00d4ff;
+            font-size: 3rem;
+            cursor: pointer;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+        }
+
+        .modal-close:hover {
+            color: #00ff88;
+            text-shadow: 0 0 30px rgba(0, 255, 136, 0.8);
+        }
+
+        .product-detail-emoji {
+            font-size: 5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .product-detail h3 {
+            color: #00d4ff;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px #00d4ff;
+        }
+
+        .product-detail p {
+            color: #a0d8f1;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .product-detail-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff00ff 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 0 30px rgba(255, 0, 255, 0.3);
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 50px rgba(255, 0, 255, 0.5);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background: transparent;
+            color: #00d4ff;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
+        }
+
+        .admin-login {
+            max-width: 400px;
+            margin: 2rem auto;
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .admin-panel {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #00d4ff;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 5px;
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .admin-product-list {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .admin-product-item {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-product-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-product-emoji {
+            font-size: 2rem;
+        }
+
+        .admin-product-name {
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff0055 0%, #ff0099 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.5);
+            transition: all 0.3s;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 0 25px rgba(255, 0, 85, 0.7);
+            transform: scale(1.05);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #0a0e27;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ff0055;
+            text-align: center;
+            margin-top: 1rem;
+            text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+        }
+
+        .user-info {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .user-email {
+            color: #00d4ff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .cart-item {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-item-emoji {
+            font-size: 2.5rem;
+        }
+
+        .cart-item-details h3 {
+            color: #00d4ff;
+            margin-bottom: 0.3rem;
+        }
+
+        .cart-item-details p {
+            color: #a0d8f1;
+            font-size: 0.9rem;
+        }
+
+        .cart-empty {
+            text-align: center;
+            color: #a0d8f1;
+            padding: 3rem;
+            font-size: 1.2rem;
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-add-cart {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+            color: #0a0e27;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+            transition: all 0.3s;
+        }
+
+        .btn-add-cart:hover {
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .reviews-section {
+            margin-top: 4rem;
+            padding: 2rem;
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            border-radius: 15px;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .review-form {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .star {
+            cursor: pointer;
+            color: #4a5568;
+            transition: all 0.3s;
+            text-shadow: 0 0 10px rgba(74, 85, 104, 0.5);
+        }
+
+        .star:hover,
+        .star.active {
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+            transform: scale(1.2);
+        }
+
+        .review-card {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            margin-bottom: 1rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .review-name {
+            color: #00d4ff;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .review-stars {
+            color: #ffd700;
+            font-size: 1.2rem;
+        }
+
+        .review-text {
+            color: #a0d8f1;
+            margin-top: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .review-date {
+            color: #6b7280;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+
+        .promo-section {
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-top: 2rem;
+            box-shadow: 0 3px 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .promo-code-display {
+            background: rgba(0, 212, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px dashed #00d4ff;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .promo-code {
+            font-size: 1.8rem;
+            color: #00ff88;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.7);
+            font-family: 'Courier New', monospace;
+        }
+
+        .promo-status {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .promo-active {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+
+        .promo-used {
+            background: rgba(255, 0, 85, 0.2);
+            color: #ff0055;
+            border: 1px solid #ff0055;
+        }
+
+        .promo-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .promo-input-group input {
+            flex: 1;
+        }
+
+        .promo-info {
+            color: #a0d8f1;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .promo-discount {
+            color: #00ff88;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        @media (min-width: 768px) {
+            .catalog-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .mystery-boxes {
+                flex-direction: row;
+            }
+            
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            section {
+                padding: 3rem 2rem;
+            }
+        }
+
+        /* Carousel */
+        .carousel {
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto 0 auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            border: 2px solid rgba(0, 212, 255, 0.4);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            cursor: pointer;
+            position: relative;
+            background: linear-gradient(145deg, #1a1f3a, #0f1424);
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(10, 14, 39, 0.95));
+            padding: 1.5rem 1rem 1rem;
+            text-align: center;
+        }
+
+        .carousel-caption h3 {
+            color: #00d4ff;
+            font-size: 1.2rem;
+            text-shadow: 0 0 10px #00d4ff;
+            margin-bottom: 0.2rem;
+        }
+
+        .carousel-caption p {
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 212, 255, 0.2);
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(0, 212, 255, 0.4);
+            box-shadow: 0 0 15px #00d4ff;
+        }
+
+        .carousel-btn.prev { left: 10px; }
+        .carousel-btn.next { right: 10px; }
+
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(0, 212, 255, 0.3);
+            border: 1px solid #00d4ff;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .carousel-dot.active {
+            background: #00d4ff;
+            box-shadow: 0 0 10px #00d4ff;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Canvas fond animé + vaisseau -->
+    <canvas id="bg-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+    <!-- Fond animé -->
+    
+    <header>
+        <div class="header-top">
+            <div class="logo" style="display:flex; flex-direction:column; line-height:1.1;">
+                Nomar3D
+                <span style="font-size:0.6em; color:#a0d4ff; font-weight:500; letter-spacing:0.01em; text-shadow:none;">Figurines 3D imprimées en France à prix mini.</span>
+            </div>
+            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        </div>
+        <nav id="mainNav">
+            <ul>
+                <li><a onclick="showSection('accueil')">Accueil</a></li>
+                <li><a onclick="showSection('catalogue')">Catalogue</a></li>
+                <li><a onclick="showSection('mystere')">Boîtes Mystère</a></li>
+                <li><a onclick="showSection('pourquoi')">Pourquoi moi ?</a></li>
+                <li><a onclick="showSection('contact')">Contact</a></li>
+                <li><a onclick="showSection('panier')">🛒 Panier (<span id="cart-count">0</span>)</a></li>
+                <li><a onclick="showSection('compte')">👤 Mon Compte</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="accueil" class="hero">
+            <h1>Bienvenue chez Nomar3D</h1>
+            <p>Impressions 3D de qualité à prix abordables</p>
+
+            <div class="carousel" id="hero-carousel">
+                <div class="carousel-track" id="carousel-track">
+                </div>
+                <button class="carousel-btn prev" onclick="carouselPrev()">&#8249;</button>
+                <button class="carousel-btn next" onclick="carouselNext()">&#8250;</button>
+            </div>
+            <div class="carousel-dots" id="carousel-dots"></div>
+
+            <a href="#" onclick="showSection('catalogue')" class="btn" style="margin-top:2rem;">Découvrir le catalogue</a>
+        </section>
+
+        <section id="catalogue" class="hidden" style="background:rgba(10,14,39,0.85); border-radius:15px;">
+            <h2>Catalogue</h2>
+
+            <!-- Barre de recherche -->
+            <div style="max-width:500px; margin:0 auto 2rem auto; position:relative;">
+                <input type="text" id="search-input" placeholder="🔍 Rechercher un produit..." 
+                    oninput="filterCatalog(this.value)"
+                    style="width:100%; padding:0.9rem 1.2rem; border-radius:50px; border:2px solid #00d4ff;
+                           background:rgba(0,20,60,0.7); color:#fff; font-size:1rem; outline:none;
+                           box-shadow:0 0 15px rgba(0,212,255,0.3); box-sizing:border-box;">
+            </div>
+
+            <!-- Message aucun résultat -->
+            <div id="no-result" style="display:none; text-align:center; padding:2rem;">
+                <p style="font-size:1.1rem; color:#e0e0e0; margin-bottom:1rem;">😕 Tu ne trouve pas ce que tu cherche ?</p>
+                <a href="mailto:lucas.nomme29@gmail.com?subject=Demande objet personnalisé" 
+                   style="display:inline-block; background:linear-gradient(135deg,#00d4ff,#ff00ff); 
+                          color:#fff; padding:0.8rem 1.8rem; border-radius:50px; font-weight:bold;
+                          text-decoration:none; box-shadow:0 0 20px rgba(0,212,255,0.4);">
+                    📧 Envoie moi un mail pour un objet personnalisé
+                </a>
+            </div>
+
+            <div class="catalog-grid" id="catalog-grid">
+            </div>
+        </section>
+
+        <!-- Modal pour agrandir les images -->
+        <div id="image-modal" class="image-modal" onclick="closeImageModal()">
+            <span class="modal-close" onclick="closeImageModal()">✕</span>
+            <img id="modal-image" class="modal-image" src="" alt="Image agrandie">
+        </div>
+
+        <section id="product-detail" class="hidden">
+            <h2>Détails du produit</h2>
+            <div class="product-detail">
+                <img id="detail-image" class="product-detail-image" src="" alt="" style="display:none;" onclick="openImageModal()">
+                <div class="product-detail-emoji" id="detail-emoji" style="display:none;">🎮</div>
+                <div id="image-gallery" class="image-gallery" style="display:none;"></div>
+                <h3 id="detail-title">Produit</h3>
+                <p id="detail-price" style="color:#00ff88; font-size:1.5rem; font-weight:bold; text-align:center;"></p>
+                <p id="detail-description">Description détaillée du produit.</p>
+                <div id="detail-warning" style="display:none; background:rgba(255,200,0,0.15); border:2px solid #ffcc00; border-radius:12px; padding:1rem; margin:1rem 0; text-align:center; color:#ffcc00; font-weight:bold; font-size:1rem; text-shadow: 0 0 8px rgba(255,204,0,0.5);"></div>
+                <div class="product-detail-actions">
+                    <button onclick="addToCart()" class="btn-add-cart" id="add-to-cart-btn">➕ Ajouter au panier</button>
+                    <a href="#" onclick="showSection('catalogue')" class="btn-secondary">Retour au catalogue</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="mystere" class="hidden" style="background:rgba(10,14,39,0.85); border-radius:15px;">
+            <h2>Boîtes Mystère 🎁</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">
+                Laissez-vous surprendre !
+            </p>
+            <div class="mystery-boxes">
+                <div class="mystery-box">
+                    <h3>📦 Petite</h3>
+                    <div class="price">5€</div>
+                    <p>Une surprise imprimée en 3D</p>
+                    <button onclick="commanderBoite('Petite', '5')" class="btn">Commander</button>
+                </div>
+                <div class="mystery-box">
+                    <h3>📦 Moyenne</h3>
+                    <div class="price">10€</div>
+                    <p>Plusieurs objets surprises</p>
+                    <button onclick="commanderBoite('Moyenne', '10')" class="btn">Commander</button>
+                </div>
+                <div class="mystery-box">
+                    <h3>📦 Grande</h3>
+                    <div class="price">15€</div>
+                    <p>La boîte ultime !</p>
+                    <button onclick="commanderBoite('Grande', '15')" class="btn">Commander</button>
+                </div>
+            </div>
+
+            <!-- Modal paiement boîte mystère -->
+            <div id="mystere-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; overflow-y:auto;">
+                <div style="max-width:480px; width:90%; margin:auto; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#1a2a5e; border:2px solid #00d4ff; border-radius:20px; padding:2rem; box-shadow:0 0 50px rgba(0,212,255,0.4);">
+                    <h3 id="mystere-titre" style="color:#00d4ff; text-align:center; margin-bottom:0.5rem; font-size:1.4rem;"></h3>
+                    <p id="mystere-prix" style="color:#00ff88; text-align:center; font-size:1.8rem; font-weight:bold; margin-bottom:1.5rem;"></p>
+                    
+                    <!-- Infos client -->
+                    <div style="margin-bottom:1.2rem;">
+                        <input id="mystere-nom" type="text" placeholder="Votre prénom et nom..." 
+                            style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.8); color:#fff; outline:none; box-sizing:border-box; font-size:1rem; margin-bottom:0.8rem;">
+                        <input id="mystere-email" type="email" placeholder="Votre email..." 
+                            style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.8); color:#fff; outline:none; box-sizing:border-box; font-size:1rem; margin-bottom:0.8rem;">
+                        <input id="mystere-adresse" type="text" placeholder="Votre adresse de livraison..." 
+                            style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.8); color:#fff; outline:none; box-sizing:border-box; font-size:1rem;">
+                    </div>
+
+                    <div id="mystere-form-error" style="display:none; color:#ff0055; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
+
+                    <!-- Badge sécurité -->
+                    <div style="text-align:center; padding:0.6rem; background:rgba(0,255,100,0.08); border:1px solid rgba(0,255,100,0.3); border-radius:10px; margin-bottom:1.2rem;">
+                        <span style="color:#00ff88; font-size:0.9rem;">🔒 Paiement 100% sécurisé via PayPal</span>
+                    </div>
+
+                    <!-- Bouton PayPal -->
+                    <div id="mystere-paypal-container"></div>
+
+                    <button onclick="fermerModalMystere()" class="btn-secondary" style="width:100%; margin-top:1rem;">Annuler</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="pourquoi" class="hidden" style="background:rgba(10,14,39,0.85); border-radius:15px;">
+            <h2>Pourquoi moi ?</h2>
+            <p style="text-align:center; color:#a0d4ff; font-size:1.1rem; margin-bottom:2rem;">
+                🏆 Déjà <strong style="color:#00d4ff;">200 figurines</strong> imprimées et créé par un passionné d'impression 3D.
+            </p>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">✨</div>
+                    <h3>Qualité Premium</h3>
+                    <p>Impressions de haute précision</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <h3>Livraison Express</h3>
+                    <p>Expédition rapide</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Personnalisation</h3>
+                    <p>Créations sur mesure</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">💰</div>
+                    <h3>Prix Abordables</h3>
+                    <p>Tarifs compétitifs</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Service Client</h3>
+                    <p>À votre écoute</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">♻️</div>
+                    <h3>Écologique</h3>
+                    <p>Matériaux responsables</p>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="contact" class="hidden" style="background:rgba(10,14,39,0.85); border-radius:15px;">
+            <h2>Contact</h2>
+            <div class="contact-info">
+                <p style="text-align: center; margin-bottom: 2rem;">
+                    N'hésitez pas à me contacter !
+                </p>
+                <p>
+                    <strong>📧 Email :</strong><br>
+                    <a href="mailto:lucas.nomme29@gmail.com">lucas.nomme29@gmail.com</a>
+                </p>
+                <p>
+                    <strong>📱 Téléphone :</strong><br>
+                    <a href="tel:+33651676224">06 51 67 62 24</a>
+                </p>
+            </div>
+        </section>
+
+        <!-- Section Panier -->
+        <section id="panier" class="hidden" style="background:rgba(10,14,39,0.85); border-radius:15px;">
+            <h2>🛒 Mon Panier</h2>
+            <div id="cart-login-required" style="display:none; text-align:center; padding:2rem;">
+                <p style="color:#a0d4ff; margin-bottom:1rem;">Connecte-toi pour accéder à ton panier.</p>
+                <button onclick="showSection('compte')" class="btn-primary">Se connecter</button>
+            </div>
+            <div id="cart-content" style="display:none;">
+                <div id="cart-empty" style="display:none; text-align:center; padding:2rem; color:#a0d4ff;">
+                    <p style="font-size:2rem;">🛒</p>
+                    <p>Ton panier est vide.</p>
+                    <button onclick="showSection('catalogue')" class="btn-primary" style="margin-top:1rem;">Voir le catalogue</button>
+                </div>
+                <div id="cart-items"></div>
+                <div id="cart-promo-section" style="display:none; margin:1.5rem 0;">
+                    <div style="display:flex; gap:0.5rem; max-width:400px; margin:0 auto;">
+                        <input id="promo-input" type="text" placeholder="Code promo..." 
+                            style="flex:1; padding:0.7rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; font-size:0.95rem;">
+                        <button onclick="applyPromoCode()" class="btn-primary" style="padding:0.7rem 1.2rem; border-radius:50px;">Appliquer</button>
+                    </div>
+                    <div id="promo-message" style="display:none; text-align:center; margin-top:0.5rem; color:#ff0055; font-weight:bold;"></div>
+                    <div id="promo-applied" style="display:none; text-align:center; margin-top:0.5rem; color:#00ff88; font-weight:bold;"></div>
+                </div>
+                <div id="cart-actions" class="cart-actions" style="display:none;">
+                    <p style="text-align:center; color:#ffcc00; margin-bottom:1rem; font-weight:bold;">
+                        💶 <strong>-1€ par article en paiement liquide</strong>
+                    </p>
+                    <div id="paypal-button-container" style="width:100%; margin-bottom:1rem;"></div>
+                    <button onclick="clearCart()" class="btn-danger" style="width:100%;">Vider le panier</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Compte -->
+        <section id="compte" class="hidden" style="background:rgba(10,14,39,0.85); border-radius:15px;">
+            <h2>👤 Mon Compte</h2>
+            <div id="login-section" style="max-width:400px; margin:0 auto;">
+                <input id="user-email" type="email" placeholder="Email..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <input id="user-password" type="password" placeholder="Mot de passe..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <div id="login-error" style="display:none; color:#ff0055; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
+                <button onclick="login()" class="btn-primary" style="width:100%; margin-bottom:0.8rem;">Se connecter</button>
+                <button onclick="showRegistration()" class="btn-secondary" style="width:100%;">Créer un compte</button>
+            </div>
+            <div id="registration-section" style="display:none; max-width:400px; margin:0 auto;">
+                <h3 style="text-align:center; color:#00d4ff; margin-bottom:1.5rem;">Créer un compte</h3>
+                <input id="register-prenom" type="text" placeholder="Votre prénom..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <input id="register-email" type="email" placeholder="Email..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <input id="register-password" type="password" placeholder="Mot de passe (min. 6 caractères)..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <input id="register-confirm" type="password" placeholder="Confirmer le mot de passe..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem;">
+                <div id="register-message" style="display:none; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
+                <button onclick="requestRegistration()" class="btn-primary" style="width:100%; margin-bottom:0.8rem;">Créer mon compte</button>
+                <button onclick="showLogin()" class="btn-secondary" style="width:100%;">Retour connexion</button>
+            </div>
+            <div id="verification-section" style="display:none; max-width:400px; margin:0 auto; text-align:center;">
+                <h3 style="color:#00d4ff; margin-bottom:1rem;">✉️ Vérification email</h3>
+                <p style="color:#a0d4ff; margin-bottom:1rem;">Entre le code reçu par email :</p>
+                <input id="verify-code" type="text" placeholder="Code de vérification..." 
+                    style="width:100%; padding:0.8rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.7); color:#fff; outline:none; margin-bottom:1rem; box-sizing:border-box; font-size:1rem; text-align:center; letter-spacing:0.3em;">
+                <div id="verify-message" style="display:none; text-align:center; margin-bottom:1rem; font-weight:bold;"></div>
+                <button onclick="verifyCode()" class="btn-primary" style="width:100%; margin-bottom:0.8rem;">Vérifier</button>
+                <button onclick="showLogin()" class="btn-secondary" style="width:100%;">Annuler</button>
+            </div>
+            <div id="banned-screen" style="display:none; max-width:500px; margin:0 auto;"></div>
+            <div id="user-profile" style="display:none; text-align:center; max-width:500px; margin:0 auto;">
+                <p style="color:#00d4ff; font-size:1.1rem; margin-bottom:0.5rem;">✅ Connecté en tant que <strong id="profile-email"></strong></p>
+                <p id="profile-prenom" style="color:#a0d4ff; margin-bottom:1rem;"></p>
+                <!-- Onglet admin Ban (visible seulement pour lucas) -->
+                <div id="admin-panel" style="display:none; margin:1.5rem 0; text-align:left;">
+                    <div style="display:flex; gap:0.5rem; margin-bottom:1.5rem; justify-content:center;">
+                        <button onclick="showAdminTab('users')" id="tab-users" class="btn-primary" style="padding:0.6rem 1.2rem;">👥 Membres</button>
+                        <button onclick="showAdminTab('bans')" id="tab-bans" class="btn-secondary" style="padding:0.6rem 1.2rem;">🔨 Bans</button>
+                    </div>
+
+                    <!-- Liste des membres -->
+                    <div id="admin-users" style="display:block;">
+                        <h3 style="color:#00d4ff; margin-bottom:1rem; text-align:center;">👥 Membres inscrits</h3>
+                        <div id="users-list"></div>
+                    </div>
+
+                    <!-- Liste des bans -->
+                    <div id="admin-bans" style="display:none;">
+                        <h3 style="color:#ff0055; margin-bottom:1rem; text-align:center;">🔨 Bans actifs</h3>
+                        <div id="bans-list"></div>
+                    </div>
+
+                    <!-- Modal ban -->
+                    <div id="ban-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999;">
+                        <div style="max-width:420px; background:#0a0e27; border:2px solid #ff0055; border-radius:20px; padding:2rem; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);">
+                            <h3 style="color:#ff0055; text-align:center; margin-bottom:1rem;">🔨 Bannir <span id="ban-target-name"></span></h3>
+                            <p style="color:#a0d4ff; text-align:center; margin-bottom:1.5rem; font-size:0.9rem;" id="ban-target-email-display"></p>
+                            <div style="margin-bottom:1rem;">
+                                <label style="color:#a0d4ff; display:block; margin-bottom:0.5rem;">Type de ban :</label>
+                                <select id="ban-type" onchange="toggleBanDuration()" style="width:100%; padding:0.7rem 1rem; border-radius:50px; border:2px solid #ff0055; background:rgba(0,20,60,0.8); color:#fff; outline:none; font-size:1rem;">
+                                    <option value="temporaire">⏱️ Temporaire</option>
+                                    <option value="definitif">🚫 Définitif</option>
+                                </select>
+                            </div>
+                            <div id="ban-duration-section" style="margin-bottom:1rem;">
+                                <label style="color:#a0d4ff; display:block; margin-bottom:0.5rem;">Durée :</label>
+                                <div style="display:flex; gap:0.5rem; align-items:center;">
+                                    <input id="ban-duration" type="number" min="1" value="1" style="width:80px; padding:0.7rem; border-radius:50px; border:2px solid #ff0055; background:rgba(0,20,60,0.8); color:#fff; outline:none; text-align:center; font-size:1rem;">
+                                    <select id="ban-unit" style="flex:1; padding:0.7rem 1rem; border-radius:50px; border:2px solid #ff0055; background:rgba(0,20,60,0.8); color:#fff; outline:none; font-size:1rem;">
+                                        <option value="minutes">minutes</option>
+                                        <option value="heures">heures</option>
+                                        <option value="jours" selected>jours</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:0.5rem; margin-top:1rem;">
+                                <button onclick="confirmBan()" style="flex:1; background:linear-gradient(135deg,#ff0055,#ff6600); color:#fff; border:none; padding:0.8rem; border-radius:50px; font-weight:bold; cursor:pointer; font-size:1rem;">🔨 Bannir</button>
+                                <button onclick="document.getElementById('ban-modal').style.display='none'" class="btn-secondary" style="flex:1;">Annuler</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="logout()" class="btn-danger" style="margin-top:1rem; width:100%;">Se déconnecter</button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Nomar3D - Tous droits réservés</p>
+    </footer>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AQZRb8mwZzc6gBTIAFW1-BTg3iJBFlYngtyAUwDRIHqCc5utDv08yRFURrG1aaoFohJpOBqIlM9BEyv4&currency=EUR"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        var db = null;
+        window.addEventListener('load', function() {
+            var s1 = document.createElement('script');
+            s1.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';
+            s1.onload = function() {
+                var s2 = document.createElement('script');
+                s2.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js';
+                s2.onload = function() {
+                    try {
+                        firebase.initializeApp({
+                            apiKey: "AIzaSyDV4A5MOIM0-f6mqGXESStfBlNisb4gv_8",
+                            authDomain: "nomar3d.firebaseapp.com",
+                            projectId: "nomar3d",
+                            storageBucket: "nomar3d.firebasestorage.app",
+                            messagingSenderId: "237676853853",
+                            appId: "1:237676853853:web:26457ef5c978068d486bb4"
+                        });
+                        db = firebase.firestore();
+                        console.log('Firebase OK');
+                    } catch(e) { console.log('Firebase erreur:', e); }
+                };
+                document.head.appendChild(s2);
+            };
+            document.head.appendChild(s1);
+        });
+        // CODES PROMO
+        const PROMO_CODES = {
+            '3DSTART': { discount: 0.10, description: '-10%' },
+            'MONSTER': { discount: 0.20, description: '-20%' }
+        };
+        
+        // Compte admin avec codes promo illimités
+        const ADMIN_EMAIL = "lucas.nomme29@gmail.com";
+        
+        // EmailJS Configuration
+        emailjs.init("_DKOa4vOR0-Pftqod");
+        
+        // Données utilisateur
+        let userEmail = null;
+        let cart = [];
+        let currentProduct = null;
+        let promoCodeApplied = false;
+        let appliedPromoCode = null;
+        let pendingRegistration = null;
+        let selectedRating = 0;
+        let reviews = [];
+        
+        // Base de données des produits
+        let products = [
+            { 
+                id: 'produit1', 
+                emoji: '👽', 
+                name: 'Alien', 
+                description: 'Figurine alien imprimée en 3D', 
+                price: '3€', 
+                images: ['https://i.imgur.com/GcCVNhi.jpeg']
+            },
+            { 
+                id: 'produit2', 
+                emoji: '🌀', 
+                name: 'Anti-stress Spiral', 
+                description: 'Spirale anti-stress imprimée en 3D', 
+                price: '4€', 
+                images: ['https://i.imgur.com/BfN9fHa.jpeg']
+            },
+            { 
+                id: 'produit3', 
+                emoji: '⚡', 
+                name: 'Pokémon Mécha Mewtwo', 
+                description: 'Figurine Mécha Mewtwo imprimée en 3D', 
+                price: '7€', 
+                images: ['https://i.imgur.com/Z8D8ZvX.jpeg']
+            },
+            { 
+                id: 'produit4', 
+                emoji: '🔥', 
+                name: 'Pokémon Mécha Dracaufeu', 
+                description: 'Figurine Mécha Dracaufeu imprimée en 3D', 
+                price: '4€', 
+                images: ['https://i.imgur.com/bybP1YN.jpeg']
+            },
+            { 
+                id: 'produit5', 
+                emoji: '😴', 
+                name: 'Pokémon Ronflex', 
+                description: 'Figurine Ronflex imprimée en 3D', 
+                price: '4€', 
+                images: ['https://i.imgur.com/fU5gAyX.jpeg']
+            },
+            { 
+                id: 'produit6', 
+                emoji: '🏓', 
+                name: 'Balle de Ping-Pong', 
+                description: 'Balle de ping-pong imprimée en 3D', 
+                price: '4€', 
+                images: ['https://i.imgur.com/ZgrsopU.jpeg']
+            },
+            { 
+                id: 'produit7', 
+                emoji: '🦋', 
+                name: 'Couteau papillon + support', 
+                description: 'Couteau papillon de bonne qualité et coulisse bien', 
+                price: '5€', 
+                images: ['https://i.imgur.com/EiAxyW6.jpeg', 'https://i.imgur.com/cndrH04.jpeg']
+            },
+            { 
+                id: 'produit8', 
+                emoji: '📱', 
+                name: 'Coque iPhone', 
+                description: 'Coque iPhone imprimée en 3D, résistante et légère. Compatible MagSafe.', 
+                warning: "⚠️ Pour mettre la coque : rentre bien d'abord le haut et après le bas.",
+                price: '4€', 
+                images: ['https://i.ibb.co/5hh26wZX/IMG-2392.jpg', 'https://i.ibb.co/cSdQczWC/IMG-2391.jpg']
+            },
+            { 
+                id: 'produit9', 
+                emoji: '🎭', 
+                name: 'Figurine des traitres', 
+                description: 'Figurine imprimée en plastique noir de bonne qualité en PLA.', 
+                price: '4€', 
+                images: ['https://i.ibb.co/V00RgK8K/e05c11da-ce01-4021-abba-365ac53126ed.jpg']
+            }
+        ];
+
+        function toggleMenu() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('active');
+        }
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('main section');
+            sections.forEach(section => {
+                if (section.id === sectionId) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+            
+            const nav = document.getElementById('mainNav');
+            nav.classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Si on accède au panier, vérifier la connexion
+            if (sectionId === 'panier') {
+                updateCartDisplay();
+            }
+        }
+
+        function login() {
+            const email = document.getElementById('user-email').value.trim();
+            const password = document.getElementById('user-password').value;
+            const errorMsg = document.getElementById('login-error');
+            
+            if (!email || !email.includes('@')) {
+                errorMsg.textContent = 'Veuillez entrer une adresse email valide';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            if (!password || password.length < 6) {
+                errorMsg.textContent = 'Le mot de passe doit contenir au moins 6 caractères';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            const storedPassword = localStorage.getItem('password_' + email);
+            const isVerified = localStorage.getItem('verified_' + email) === 'true';
+            
+            if (storedPassword === null) {
+                errorMsg.textContent = 'Aucun compte trouvé. Créez un compte d\'abord.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            if (!isVerified) {
+                errorMsg.textContent = 'Compte non vérifié. Vérifiez vos emails.';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            if (storedPassword === password) {
+                completeLogin(email);
+            } else {
+                errorMsg.textContent = 'Mot de passe incorrect !';
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        function showRegistration() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('registration-section').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('registration-section').style.display = 'none';
+            document.getElementById('verification-section').style.display = 'none';
+            document.getElementById('password-reset-section').style.display = 'none';
+            document.getElementById('register-message').style.display = 'none';
+            document.getElementById('verify-message').style.display = 'none';
+            document.getElementById('reset-message').style.display = 'none';
+        }
+
+        function requestRegistration() {
+            const prenom = document.getElementById('register-prenom').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            const confirm = document.getElementById('register-confirm').value;
+            const messageElement = document.getElementById('register-message');
+            
+            if (!prenom) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Veuillez entrer votre prénom';
+                messageElement.style.display = 'block';
+                return;
+            }
+
+            if (!email || !email.includes('@')) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Email invalide';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            if (password.length < 6) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Le mot de passe doit contenir au moins 6 caractères';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            if (password !== confirm) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Les mots de passe ne correspondent pas';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            const existingAccount = localStorage.getItem('password_' + email);
+            if (existingAccount !== null) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Un compte existe déjà avec cet email';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            pendingRegistration = {
+                email: email,
+                password: password,
+                prenom: prenom,
+                code: '2983'
+            };
+            
+            // Envoi automatique de l'email avec EmailJS
+            emailjs.send('service_yfhuws5', 'template_3oszper', {
+                to_email: email,
+                email: email,
+                name: 'Client'
+            }).then(
+                function(response) {
+                    console.log('Email envoyé avec succès', response);
+                    messageElement.style.color = '#00ff88';
+                    messageElement.textContent = '✅ Email envoyé ! Vérifiez votre boîte mail.';
+                    messageElement.style.display = 'block';
+                    
+                    document.getElementById('registration-section').style.display = 'none';
+                    document.getElementById('verification-section').style.display = 'block';
+                },
+                function(error) {
+                    console.error('Erreur envoi email', error);
+                    messageElement.style.color = '#ff0055';
+                    messageElement.textContent = '❌ Erreur lors de l\'envoi de l\'email. Réessayez.';
+                    messageElement.style.display = 'block';
+                }
+            );
+            
+            // Notification pour toi
+            const subject = 'Nouvelle demande de compte - Nomar3D';
+            const body = `Bonjour,%0D%0A%0D%0ANouvelle demande de création de compte :%0D%0A%0D%0AEmail du client : ${email}%0D%0A%0D%0AUn email avec le code a été envoyé automatiquement au client.`;
+            window.open(`mailto:lucas.nomme29@gmail.com?subject=${subject}&body=${body}`, '_blank');
+        }
+
+        function verifyCode() { verifyAccount(); }
+
+        function verifyAccount() {
+            const code = document.getElementById('verify-code').value.trim();
+            const messageElement = document.getElementById('verify-message');
+            
+            if (!pendingRegistration) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Aucune demande en cours';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            if (code !== pendingRegistration.code) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Code incorrect';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            localStorage.setItem('password_' + pendingRegistration.email, pendingRegistration.password);
+            localStorage.setItem('verified_' + pendingRegistration.email, 'true');
+            localStorage.setItem('prenom_' + pendingRegistration.email, pendingRegistration.prenom || '');
+            // Sauvegarder dans Firebase
+            if (db) {
+                db.collection('membres').doc(pendingRegistration.email.replace(/[@.]/g,'_')).set({
+                    email: pendingRegistration.email,
+                    prenom: pendingRegistration.prenom || '',
+                    date: new Date().toLocaleDateString('fr-FR')
+                }).catch(function(e) { console.log('Firebase erreur:', e); });
+            }
+            
+            messageElement.style.color = '#00ff88';
+            messageElement.textContent = '✅ Compte créé avec succès ! Connexion...';
+            messageElement.style.display = 'block';
+            
+            setTimeout(() => {
+                completeLogin(pendingRegistration.email);
+                pendingRegistration = null;
+                document.getElementById('verify-code').value = '';
+            }, 1500);
+        }
+
+        function showPasswordReset() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('password-reset-section').style.display = 'block';
+            document.getElementById('reset-email').value = document.getElementById('user-email').value;
+        }
+
+        function requestPasswordReset() {
+            const email = document.getElementById('reset-email').value.trim();
+            const messageElement = document.getElementById('reset-message');
+            
+            if (!email || !email.includes('@')) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Email invalide';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            const existingAccount = localStorage.getItem('password_' + email);
+            if (existingAccount === null) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Aucun compte trouvé';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            const newPassword = Math.random().toString(36).slice(-8);
+            const tempCode = Math.floor(1000 + Math.random() * 9000).toString();
+            
+            const subject = 'Réinitialisation mot de passe Nomar3D';
+            const body = `Bonjour,%0D%0A%0D%0ADemande de réinitialisation de mot de passe :%0D%0A%0D%0AEmail : ${email}%0D%0ANouveau mot de passe temporaire : ${newPassword}%0D%0ACode : ${tempCode}%0D%0A%0D%0AMerci de lui communiquer son nouveau mot de passe.`;
+            
+            window.open(`mailto:lucas.nomme29@gmail.com?subject=${subject}&body=${body}`, '_blank');
+            
+            messageElement.style.color = '#00ff88';
+            messageElement.textContent = '✅ Demande envoyée ! Vous recevrez un nouveau mot de passe par email.';
+            messageElement.style.display = 'block';
+        }
+
+        function completeLogin(email) {
+            if (!db) { finishLogin(email); return; }
+            try {
+                var banKey = email.replace(/[@.]/g, '_');
+                db.collection('bans').doc(banKey).get().then(function(doc) {
+                    var banInfo = doc.exists ? doc.data() : JSON.parse(localStorage.getItem('ban_' + email) || 'null');
+                    if (banInfo) {
+                        if (banInfo.type === 'definitif') { showBannedScreen(true, null, email); return; }
+                        if (banInfo.until && banInfo.until > Date.now()) { showBannedScreen(false, banInfo.until, email); return; }
+                        db.collection('bans').doc(banKey).delete().catch(function(){});
+                        localStorage.removeItem('ban_' + email);
+                    }
+                    finishLogin(email);
+                }).catch(function() { finishLogin(email); });
+            } catch(e) { finishLogin(email); }
+        }
+
+        function finishLogin(email) {
+            userEmail = email;
+            ['login-section', 'registration-section', 'verification-section'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.style.display = 'none';
+            });
+            var profile = document.getElementById('user-profile');
+            var profileEmail = document.getElementById('profile-email');
+            var profilePrenom = document.getElementById('profile-prenom');
+            if (profile) profile.style.display = 'block';
+            if (profileEmail) profileEmail.textContent = email;
+            var prenom = localStorage.getItem('prenom_' + email);
+            if (profilePrenom && prenom) profilePrenom.textContent = 'Bonjour ' + prenom + ' !';
+            var loginError = document.getElementById('login-error');
+            if (loginError) loginError.style.display = 'none';
+            if (email === ADMIN_EMAIL) {
+                var adminPanel = document.getElementById('admin-panel');
+                if (adminPanel) { adminPanel.style.display = 'block'; loadAdminUsers(); }
+            }
+            loadCart();
+            updateCartCount();
+        }
+
+        // Écran de ban
+        function showBannedScreen(definitif, until, email) {
+            document.querySelectorAll('#compte > div').forEach(d => d.style.display = 'none');
+            const bannedDiv = document.getElementById('banned-screen');
+            if (bannedDiv) {
+                bannedDiv.style.display = 'block';
+                if (definitif) {
+                    bannedDiv.innerHTML = '<div style="text-align:center; padding:2rem;"><p style="font-size:3rem;">🚫</p><h2 style="color:#ff0055; margin-bottom:1rem;">Tu t\'es fait ban</h2><p style="color:#a0d4ff; margin-bottom:1.5rem;">Envoie moi un mail à <a href="mailto:lucas.nomme29@gmail.com" style="color:#00d4ff;">lucas.nomme29@gmail.com</a> si je me suis trompé.</p></div>';
+                } else {
+                    bannedDiv.innerHTML = '<div style="text-align:center; padding:2rem;"><p style="font-size:3rem;">⏱️</p><h2 style="color:#ff6600; margin-bottom:1rem;">Compte suspendu temporairement</h2><p style="color:#a0d4ff; margin-bottom:1rem;">Temps restant :</p><p id="ban-countdown" style="color:#ff6600; font-size:2rem; font-weight:bold; font-family:monospace;"></p><p style="color:#a0d4ff; margin-top:1rem; font-size:0.9rem;">Envoie un mail à <a href="mailto:lucas.nomme29@gmail.com" style="color:#00d4ff;">lucas.nomme29@gmail.com</a> si c\'est une erreur.</p></div>';
+                    // Minuteur
+                    var countdown = setInterval(function() {
+                        var remaining = until - Date.now();
+                        if (remaining <= 0) {
+                            clearInterval(countdown);
+                            localStorage.removeItem('ban_' + email);
+                            location.reload();
+                            return;
+                        }
+                        var h = Math.floor(remaining / 3600000);
+                        var m = Math.floor((remaining % 3600000) / 60000);
+                        var s = Math.floor((remaining % 60000) / 1000);
+                        var el = document.getElementById('ban-countdown');
+                        if (el) el.textContent = (h > 0 ? h + 'h ' : '') + (m > 0 ? m + 'm ' : '') + s + 's';
+                    }, 1000);
+                }
+            }
+        }
+
+        function applyPromoCode() {
+            const inputCode = document.getElementById('promo-input').value.trim().toUpperCase();
+            const messageElement = document.getElementById('promo-message');
+            
+            // Vérifier si cet utilisateur a déjà utilisé un code promo (sauf si admin)
+            const usedPromos = JSON.parse(localStorage.getItem('promo_used_' + userEmail) || '[]');
+            const isAdmin = userEmail === ADMIN_EMAIL;
+            
+            messageElement.style.display = 'block';
+            
+            if (inputCode === '') {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Veuillez entrer un code promo';
+                return;
+            }
+            
+            // Vérifier si le code existe
+            if (!PROMO_CODES[inputCode]) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Code promo invalide';
+                return;
+            }
+            
+            // Vérifier si l'utilisateur a déjà utilisé ce code (sauf si admin)
+            if (!isAdmin && usedPromos.includes(inputCode)) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Vous avez déjà utilisé ce code promo';
+                return;
+            }
+            
+            // Code valide !
+            promoCodeApplied = true;
+            appliedPromoCode = inputCode;
+            const discount = PROMO_CODES[inputCode];
+            
+            messageElement.style.display = 'none';
+            const adminBadge = isAdmin ? ' <span style="color: #00ff88;">(Admin - Illimité)</span>' : '';
+            document.getElementById('promo-applied').innerHTML = `<p class="promo-discount">✅ ${discount.description} de réduction appliquée !${adminBadge}</p>`;
+            document.getElementById('promo-applied').style.display = 'block';
+            document.getElementById('promo-input').disabled = true;
+            
+            renderPayPalButton();
+        }
+
+        function markPromoAsUsed() {
+            // Ne pas marquer comme utilisé si c'est le compte admin
+            if (userEmail === ADMIN_EMAIL) return;
+            
+            if (promoCodeApplied && appliedPromoCode && userEmail) {
+                const usedPromos = JSON.parse(localStorage.getItem('promo_used_' + userEmail) || '[]');
+                if (!usedPromos.includes(appliedPromoCode)) {
+                    usedPromos.push(appliedPromoCode);
+                    localStorage.setItem('promo_used_' + userEmail, JSON.stringify(usedPromos));
+                }
+            }
+        }
+
+        function changePassword() {
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const errorMsg = document.getElementById('password-error');
+            
+            if (!newPassword || newPassword.length < 6) {
+                errorMsg.textContent = 'Le mot de passe doit contenir au moins 6 caractères';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                errorMsg.textContent = 'Les mots de passe ne correspondent pas';
+                errorMsg.style.display = 'block';
+                return;
+            }
+            
+            const subject = 'Changement de mot de passe Nomar3D';
+            const body = `Bonjour,%0D%0A%0D%0ADemande de changement de mot de passe :%0D%0A%0D%0AEmail : ${userEmail}%0D%0ANouveau mot de passe : ${newPassword}%0D%0A%0D%0AMerci de valider ce changement.`;
+            
+            window.open(`mailto:lucas.nomme29@gmail.com?subject=${subject}&body=${body}`, '_blank');
+            
+            errorMsg.style.display = 'none';
+            alert('✅ Demande envoyée ! Le changement sera effectif après validation.');
+        }
+
+        function showPasswordReset() {
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('password-reset-section').style.display = 'block';
+            document.getElementById('reset-email').value = document.getElementById('user-email').value;
+        }
+
+        function showLogin() {
+            document.getElementById('login-section').style.display = 'block';
+            document.getElementById('registration-section').style.display = 'none';
+            document.getElementById('verification-section').style.display = 'none';
+            document.getElementById('password-reset-section').style.display = 'none';
+            document.getElementById('register-message').style.display = 'none';
+            document.getElementById('verify-message').style.display = 'none';
+            document.getElementById('reset-message').style.display = 'none';
+        }
+
+        function sendPasswordReset() {
+            const email = document.getElementById('reset-email').value.trim();
+            const messageElement = document.getElementById('reset-message');
+            
+            if (!email || !email.includes('@')) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '⚠️ Veuillez entrer une adresse email valide';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            const storedPassword = localStorage.getItem('password_' + email);
+            
+            if (storedPassword === null) {
+                messageElement.style.color = '#ff0055';
+                messageElement.textContent = '❌ Aucun compte trouvé avec cet email';
+                messageElement.style.display = 'block';
+                return;
+            }
+            
+            const subject = 'Réinitialisation de votre mot de passe - Nomar3D';
+            const body = `Bonjour,%0D%0A%0D%0AJe souhaite réinitialiser mon mot de passe pour mon compte Nomar3D.%0D%0A%0D%0AMon email : ${email}%0D%0A%0D%0AMerci de m'envoyer les instructions pour créer un nouveau mot de passe.%0D%0A%0D%0ACordialement`;
+            
+            window.location.href = `mailto:lucas.nomme29@gmail.com?subject=${subject}&body=${body}`;
+            
+            messageElement.style.color = '#00ff88';
+            messageElement.textContent = '✅ Un email a été préparé. Envoyez-le pour recevoir vos instructions de réinitialisation.';
+            messageElement.style.display = 'block';
+        }
+
+        function logout() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                userEmail = null;
+                cart = [];
+                // Afficher login, cacher profil
+                const loginSec = document.getElementById('login-section');
+                const profile = document.getElementById('user-profile');
+                const regSec = document.getElementById('registration-section');
+                const verifSec = document.getElementById('verification-section');
+                if (loginSec) loginSec.style.display = 'block';
+                if (profile) profile.style.display = 'none';
+                if (regSec) regSec.style.display = 'none';
+                if (verifSec) verifSec.style.display = 'none';
+                const emailInput = document.getElementById('user-email');
+                const passInput = document.getElementById('user-password');
+                if (emailInput) emailInput.value = '';
+                if (passInput) passInput.value = '';
+                updateCartCount();
+                updateCartDisplay();
+            }
+        }
+
+        function showProductDetail(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            currentProduct = product;
+            
+            const imageElement = document.getElementById('detail-image');
+            const titleElement = document.getElementById('detail-title');
+            const priceElement = document.getElementById('detail-price');
+            const descElement = document.getElementById('detail-description');
+            const galleryElement = document.getElementById('image-gallery');
+            
+            // Afficher la première image
+            if (imageElement && product.images && product.images.length > 0) {
+                imageElement.src = product.images[0];
+                imageElement.style.display = 'block';
+            } else if (imageElement) {
+                imageElement.style.display = 'none';
+            }
+            
+            // Créer la galerie de miniatures
+            if (galleryElement && product.images && product.images.length > 1) {
+                galleryElement.innerHTML = '';
+                product.images.forEach((img, index) => {
+                    const thumbnail = document.createElement('img');
+                    thumbnail.src = img;
+                    thumbnail.className = 'gallery-thumbnail' + (index === 0 ? ' active' : '');
+                    thumbnail.onclick = () => { changeProductImage(img, thumbnail); };
+                    galleryElement.appendChild(thumbnail);
+                });
+                galleryElement.style.display = 'flex';
+            } else if (galleryElement) {
+                galleryElement.style.display = 'none';
+            }
+            
+            if (titleElement) titleElement.textContent = product.name;
+            if (priceElement) priceElement.textContent = product.price;
+            if (descElement) descElement.textContent = product.description || 'Figurine imprimée en 3D de haute qualité';
+            
+            // Afficher le message d'avertissement si présent
+            const warningEl = document.getElementById('detail-warning');
+            if (warningEl) {
+                if (product.warning) {
+                    warningEl.textContent = product.warning;
+                    warningEl.style.display = 'block';
+                } else {
+                    warningEl.style.display = 'none';
+                }
+            }
+            
+            showSection('product-detail');
+        }
+
+        function changeProductImage(imageSrc, clickedThumbnail) {
+            const mainImage = document.getElementById('detail-image');
+            if (mainImage) {
+                mainImage.src = imageSrc;
+            }
+            
+            // Mettre à jour les classes active
+            document.querySelectorAll('.gallery-thumbnail').forEach(thumb => {
+                thumb.classList.remove('active');
+            });
+            if (clickedThumbnail) {
+                clickedThumbnail.classList.add('active');
+            }
+        }
+
+        function openImageModal() {
+            const mainImage = document.getElementById('detail-image');
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            
+            if (mainImage && modal && modalImage) {
+                modalImage.src = mainImage.src;
+                modal.classList.add('active');
+            }
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-modal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        function addToCart() {
+            if (!userEmail) {
+                if (confirm('Vous devez être connecté pour ajouter au panier. Se connecter maintenant ?')) {
+                    showSection('compte');
+                }
+                return;
+            }
+            
+            if (!currentProduct) return;
+            
+            const existingItem = cart.find(item => item.id === currentProduct.id);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    id: currentProduct.id,
+                    emoji: currentProduct.emoji,
+                    name: currentProduct.name,
+                    description: currentProduct.description,
+                    price: currentProduct.price,
+                    quantity: 1
+                });
+            }
+            
+            saveCart();
+            updateCartCount();
+            
+            alert(`✅ ${currentProduct.name} ajouté au panier !`);
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCart();
+            updateCartCount();
+            updateCartDisplay();
+        }
+
+        function clearCart() {
+            if (confirm('Êtes-vous sûr de vouloir vider votre panier ?')) {
+                cart = [];
+                promoCodeApplied = false;
+                appliedPromoCode = null;
+                saveCart();
+                updateCartCount();
+                updateCartDisplay();
+            }
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            document.getElementById('cart-count').textContent = totalItems;
+        }
+
+        function updateCartDisplay() {
+            const cartItems = document.getElementById('cart-items');
+            const cartEmpty = document.getElementById('cart-empty');
+            const cartActions = document.getElementById('cart-actions');
+            const cartPromoSection = document.getElementById('cart-promo-section');
+            
+            if (!userEmail) {
+                document.getElementById('cart-login-required').style.display = 'block';
+                document.getElementById('cart-content').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('cart-login-required').style.display = 'none';
+            document.getElementById('cart-content').style.display = 'block';
+            
+            if (cart.length === 0) {
+                cartEmpty.style.display = 'block';
+                cartActions.style.display = 'none';
+                cartPromoSection.style.display = 'none';
+                cartItems.innerHTML = '';
+                return;
+            }
+            
+            cartEmpty.style.display = 'none';
+            cartActions.style.display = 'block';
+            cartPromoSection.style.display = 'block';
+            
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <div class="cart-item-info">
+                        <div class="cart-item-emoji">${item.emoji}</div>
+                        <div class="cart-item-details">
+                            <h3>${item.name}</h3>
+                            <p>Quantité: ${item.quantity} - ${item.price}</p>
+                        </div>
+                    </div>
+                    <button class="btn-danger" onclick="removeFromCart('${item.id}')">Retirer</button>
+                `;
+                cartItems.appendChild(cartItem);
+            });
+            
+            if (!promoCodeApplied) {
+                document.getElementById('promo-input').value = '';
+                document.getElementById('promo-input').disabled = false;
+                document.getElementById('promo-message').style.display = 'none';
+                document.getElementById('promo-applied').style.display = 'none';
+            }
+            
+            renderPayPalButton();
+        }
+
+        function renderPayPalButton() {
+            const container = document.getElementById('paypal-button-container');
+            container.innerHTML = '';
+            
+            // Badge paiement sécurisé
+            const securityBadge = document.createElement('div');
+            securityBadge.style.cssText = 'text-align:center; margin-bottom:1rem; padding:0.8rem; background:rgba(0,255,100,0.08); border:1px solid rgba(0,255,100,0.3); border-radius:12px;';
+            securityBadge.innerHTML = '<span style="color:#00ff88; font-size:0.95rem;">🔒 <strong>Paiement 100% sécurisé</strong> via PayPal</span><br><span style="color:#a0d4ff; font-size:0.8rem; margin-top:0.3rem; display:block;">🛡️ Vos données bancaires sont protégées &nbsp;|&nbsp; ↩️ Remboursement garanti</span>';
+            container.parentNode.insertBefore(securityBadge, container);
+            
+            let total = 0;
+            cart.forEach(item => {
+                const price = parseFloat(item.price.replace('€', '').replace(',', '.'));
+                total += price * item.quantity;
+            });
+            
+            let discount = 0;
+            if (promoCodeApplied && appliedPromoCode) {
+                discount = PROMO_CODES[appliedPromoCode].discount;
+                total = total * (1 - discount);
+            }
+            
+            if (window.paypal) {
+                window.paypal.Buttons({
+                    style: {
+                        layout: 'vertical',
+                        color: 'blue',
+                        shape: 'rect',
+                        label: 'pay'
+                    },
+                    createOrder: function(data, actions) {
+                        let itemsList = cart.map(item => ({
+                            name: item.name,
+                            unit_amount: {
+                                currency_code: 'EUR',
+                                value: parseFloat(item.price.replace('€', '').replace(',', '.')).toFixed(2)
+                            },
+                            quantity: item.quantity
+                        }));
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    currency_code: 'EUR',
+                                    value: total.toFixed(2),
+                                    breakdown: {
+                                        item_total: {
+                                            currency_code: 'EUR',
+                                            value: total.toFixed(2)
+                                        }
+                                    }
+                                },
+                                items: itemsList,
+                                payee: {
+                                    email_address: 'lucas.nomme29@gmail.com'
+                                }
+                            }]
+                        });
+                    },
+                    onApprove: function(data, actions) {
+                        return actions.order.capture().then(function(details) {
+                            // Récapitulatif des articles
+                            let articlesText = cart.map(item => 
+                                item.name + ' x' + item.quantity + ' = ' + (parseFloat(item.price.replace('\u20ac','')) * item.quantity) + '\u20ac'
+                            ).join('\n');
+                            
+                            let totalFinal = 0;
+                            cart.forEach(item => {
+                                totalFinal += parseFloat(item.price.replace('\u20ac','')) * item.quantity;
+                            });
+                            if (promoCodeApplied && appliedPromoCode) {
+                                totalFinal = totalFinal * (1 - PROMO_CODES[appliedPromoCode].discount);
+                            }
+
+                            // Envoyer email de notification
+                            emailjs.send('service_yfhuws5', 'template_cdg19jo', {
+                                client_email: details.payer.email_address,
+                                articles: articlesText,
+                                total: totalFinal.toFixed(2)
+                            });
+
+                            alert('\u2705 Paiement r\u00e9ussi ! Merci ' + details.payer.name.given_name + ' !\n\nMerci d\'envoyer votre adresse de livraison \u00e0 lucas.nomme29@gmail.com');
+                            
+                            if (promoCodeApplied) {
+                                markPromoAsUsed();
+                            }
+                            
+                            clearCart();
+                        });
+                    },
+                    onError: function(err) {
+                        alert('❌ Erreur lors du paiement. Veuillez réessayer.');
+                        console.error(err);
+                    }
+                }).render('#paypal-button-container');
+            }
+        }
+
+        function updateOrderButton() {
+            const orderBtn = document.getElementById('order-cart-btn');
+            
+            let emailBody = `Bonjour,%0D%0A%0D%0AJe souhaite commander les produits suivants :%0D%0A%0D%0A`;
+            
+            cart.forEach(item => {
+                emailBody += `- ${item.name} (x${item.quantity})%0D%0A`;
+            });
+            
+            emailBody += `%0D%0AMon nom :%0D%0AMon email : ${userEmail}%0D%0AMon adresse de livraison :%0D%0AMon téléphone :%0D%0A`;
+            
+            if (promoCodeApplied) {
+                emailBody += `%0D%0ACode promo : ${PROMO_CODE} (Réduction de 10%)%0D%0A`;
+            }
+            
+            emailBody += `%0D%0AMerci !`;
+            
+            orderBtn.href = `mailto:lucas.nomme29@gmail.com?subject=Commande Panier Nomar3D&body=${emailBody}`;
+            
+            // Ajouter un événement pour marquer le code promo comme utilisé
+            orderBtn.onclick = function() {
+                if (promoCodeApplied) {
+                    setTimeout(() => {
+                        markPromoAsUsed();
+                        alert('✅ Votre code promo a été utilisé ! Merci pour votre commande.');
+                    }, 1000);
+                }
+            };
+        }
+
+        function saveCart() {
+            if (userEmail) {
+                localStorage.setItem('cart_' + userEmail, JSON.stringify(cart));
+            }
+        }
+
+        function loadCart() {
+            if (userEmail) {
+                const savedCart = localStorage.getItem('cart_' + userEmail);
+                if (savedCart) {
+                    cart = JSON.parse(savedCart);
+                }
+            }
+        }
+
+        function refreshCatalog() {
+            const catalogGrid = document.getElementById('catalog-grid') || document.querySelector('.catalog-grid');
+            catalogGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                // Distinguer scroll et tap sur mobile
+                let touchStartY = 0;
+                let touchStartX = 0;
+                let touchStartTime = 0;
+
+                productCard.addEventListener('touchstart', function(e) {
+                    touchStartY = e.touches[0].clientY;
+                    touchStartX = e.touches[0].clientX;
+                    touchStartTime = Date.now();
+                }, { passive: true });
+
+                productCard.addEventListener('touchend', function(e) {
+                    const dy = Math.abs(e.changedTouches[0].clientY - touchStartY);
+                    const dx = Math.abs(e.changedTouches[0].clientX - touchStartX);
+                    const dt = Date.now() - touchStartTime;
+                    // Ouvrir seulement si c'est un vrai tap : peu de mouvement et rapide
+                    if (dy < 10 && dx < 10 && dt < 300) {
+                        e.preventDefault();
+                        showProductDetail(product.id);
+                    }
+                });
+
+                productCard.addEventListener('click', function(e) {
+                    showProductDetail(product.id);
+                });
+                
+                const imageUrl = product.images && product.images.length > 0 ? product.images[0] : product.image;
+                const imageHtml = imageUrl 
+                    ? `<img src="${imageUrl}" alt="${product.name}" class="product-image">`
+                    : `<div class="product-emoji">${product.emoji}</div>`;
+                
+                productCard.innerHTML = `
+                    ${imageHtml}
+                    <h3>${product.name}</h3>
+                    <p class="product-price">${product.price}</p>
+                    <p class="cash-discount">💶 -1€ en liquide</p>
+                    <p>${product.description}</p>
+                `;
+                catalogGrid.appendChild(productCard);
+            });
+        }
+
+        // Initialiser au chargement
+        window.addEventListener('load', () => {
+            refreshCatalog();
+            initCarousel();
+            updateCartCount();
+            setTimeout(() => {
+                initStarRating();
+                loadReviews();
+            }, 100);
+        });
+
+        // Système d'avis
+        function initStarRating() {
+            const stars = document.querySelectorAll('.star');
+            if (!stars || stars.length === 0) return;
+            
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    selectedRating = parseInt(this.getAttribute('data-rating'));
+                    updateStars();
+                });
+            });
+        }
+
+        function updateStars() {
+            const stars = document.querySelectorAll('.star');
+            if (!stars || stars.length === 0) return;
+            
+            stars.forEach(star => {
+                const rating = parseInt(star.getAttribute('data-rating'));
+                if (rating <= selectedRating) {
+                    star.classList.add('active');
+                } else {
+                    star.classList.remove('active');
+                }
+            });
+        }
+
+        function updateReviewForm() {
+            const loginRequired = document.getElementById('review-login-required');
+            const formContent = document.getElementById('review-form-content');
+            
+            if (!loginRequired || !formContent) return;
+            
+            if (userEmail) {
+                loginRequired.style.display = 'none';
+                formContent.style.display = 'block';
+            } else {
+                loginRequired.style.display = 'block';
+                formContent.style.display = 'none';
+            }
+        }
+
+        function submitReview() {
+            const name = document.getElementById('review-name').value.trim();
+            const text = document.getElementById('review-text').value.trim();
+            
+            if (!name) {
+                alert('⚠️ Veuillez entrer votre prénom');
+                return;
+            }
+            
+            if (selectedRating === 0) {
+                alert('⚠️ Veuillez sélectionner une note');
+                return;
+            }
+            
+            if (!text) {
+                alert('⚠️ Veuillez écrire un avis');
+                return;
+            }
+            
+            const review = {
+                id: Date.now(),
+                name: name,
+                rating: selectedRating,
+                text: text,
+                date: new Date().toLocaleDateString('fr-FR'),
+                email: userEmail
+            };
+            
+            reviews.unshift(review);
+            saveReviews();
+            
+            document.getElementById('review-name').value = '';
+            document.getElementById('review-text').value = '';
+            selectedRating = 0;
+            updateStars();
+            
+            loadReviews();
+            
+            alert('✅ Merci pour votre avis !');
+        }
+
+        function saveReviews() {
+            localStorage.setItem('nomar3d_reviews', JSON.stringify(reviews));
+        }
+
+        function loadReviews() {
+            try {
+                const saved = localStorage.getItem('nomar3d_reviews');
+                if (saved) {
+                    reviews = JSON.parse(saved);
+                }
+                displayReviews();
+            } catch (error) {
+                console.error('Erreur chargement avis:', error);
+                reviews = [];
+                displayReviews();
+            }
+        }
+
+        function displayReviews() {
+            const container = document.getElementById('reviews-list');
+            if (!container) return;
+            
+            if (reviews.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #a0d8f1; padding: 2rem;">Aucun avis pour le moment. Soyez le premier !</p>';
+                return;
+            }
+            
+            container.innerHTML = reviews.map(review => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-name">${review.name}</span>
+                        <span class="review-stars">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</span>
+                    </div>
+                    <p class="review-text">${review.text}</p>
+                    <p class="review-date">${review.date}</p>
+                </div>
+            `).join('');
+        }
+
+        // Carousel
+        let carouselIndex = 0;
+        let carouselInterval = null;
+
+        function initCarousel() {
+            const track = document.getElementById('carousel-track');
+            const dotsContainer = document.getElementById('carousel-dots');
+            if (!track || !dotsContainer) return;
+
+            // Prendre les 4 premiers produits avec image
+            const featuredProducts = products.filter(p => p.images && p.images.length > 0).slice(0, 4);
+
+            track.innerHTML = '';
+            dotsContainer.innerHTML = '';
+
+            featuredProducts.forEach((product, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.innerHTML = `
+                    <img src="${product.images[0]}" alt="${product.name}">
+                    <div class="carousel-caption">
+                        <h3>${product.name}</h3>
+                        <p>${product.price}</p>
+                    </div>
+                `;
+                slide.onclick = () => showProductDetail(product.id);
+                track.appendChild(slide);
+
+                const dot = document.createElement('div');
+                dot.className = 'carousel-dot' + (index === 0 ? ' active' : '');
+                dot.onclick = () => goToSlide(index);
+                dotsContainer.appendChild(dot);
+            });
+
+            // Auto-défilement toutes les 3 secondes
+            carouselInterval = setInterval(() => carouselNext(), 3000);
+        }
+
+        function goToSlide(index) {
+            const track = document.getElementById('carousel-track');
+            const dots = document.querySelectorAll('.carousel-dot');
+            if (!track) return;
+
+            const total = track.children.length;
+            carouselIndex = (index + total) % total;
+            track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+            dots.forEach((d, i) => d.classList.toggle('active', i === carouselIndex));
+        }
+
+        function carouselNext() { goToSlide(carouselIndex + 1); }
+        function carouselPrev() { goToSlide(carouselIndex - 1); }
+
+
+
+        // ===== FOND ANIMÉ PARTICULES NÉON =====
+        (function() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            // Particules
+            const particles = [];
+            const colors = ['#00d4ff', '#0066ff', '#8800ff', '#00ff88'];
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight,
+                    r: Math.random() * 2.5 + 1,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: Math.random() * 0.6 + 0.2,
+                    pulse: Math.random() * Math.PI * 2
+                });
+            }
+
+            // Vagues
+            const waves = [
+                { y: 0.2, color: '#00d4ff', speed: 0.4, amp: 30, phase: 0 },
+                { y: 0.4, color: '#0066ff', speed: 0.3, amp: 40, phase: 1 },
+                { y: 0.6, color: '#ff00ff', speed: 0.5, amp: 25, phase: 2 },
+                { y: 0.75, color: '#00ff88', speed: 0.35, amp: 35, phase: 3 },
+                { y: 0.9, color: '#8800ff', speed: 0.45, amp: 20, phase: 4 }
+            ];
+
+            let t = 0;
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                t += 0.01;
+
+                // Dessiner les vagues
+                waves.forEach(w => {
+                    ctx.beginPath();
+                    ctx.moveTo(0, canvas.height * w.y);
+                    for (let x = 0; x <= canvas.width; x += 5) {
+                        const y = canvas.height * w.y + Math.sin(x * 0.008 + t * w.speed + w.phase) * w.amp;
+                        ctx.lineTo(x, y);
+                    }
+                    ctx.strokeStyle = w.color;
+                    ctx.globalAlpha = 0.15;
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                });
+
+                // Dessiner les particules
+                particles.forEach(p => {
+                    p.pulse += 0.03;
+                    p.alpha = 0.3 + Math.sin(p.pulse) * 0.25;
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0) p.x = canvas.width;
+                    if (p.x > canvas.width) p.x = 0;
+                    if (p.y < 0) p.y = canvas.height;
+                    if (p.y > canvas.height) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = p.color;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                    ctx.shadowBlur = 0;
+                });
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        })();
+        // ===== FIN FOND ANIMÉ =====
+
+        // ===== VAISSEAU SPATIAL + CODE SECRET =====
+        var shipObj = null;
+        var exhaustList = [];
+
+        function spawnShip() {
+            shipObj = {
+                phase: 'enter',
+                x: -150,
+                y: window.innerHeight * 0.4,
+                speed: 3,
+                loopAngle: 0,
+                loopCenterX: window.innerWidth * 0.4,
+                loopCenterY: window.innerHeight * 0.4,
+                loopRadius: 70
+            };
+        }
+
+        window.forceSpawnShip = function() {
+            spawnShip();
+        };
+
+        function drawShipShape(ctx, x, y) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.shadowBlur = 30; ctx.shadowColor = '#00d4ff';
+            ctx.beginPath();
+            ctx.moveTo(60,0); ctx.lineTo(-30,-18); ctx.lineTo(-20,0); ctx.lineTo(-30,18);
+            ctx.closePath();
+            ctx.fillStyle = '#0a1628'; ctx.strokeStyle = '#00d4ff'; ctx.lineWidth = 1.5;
+            ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.ellipse(20,0,18,10,0,0,Math.PI*2);
+            ctx.fillStyle = 'rgba(0,212,255,0.3)'; ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(10,-18); ctx.lineTo(-25,-40); ctx.lineTo(-30,-18); ctx.closePath();
+            ctx.fillStyle='#0f2040'; ctx.strokeStyle='#ff00ff'; ctx.lineWidth=1; ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(10,18); ctx.lineTo(-25,40); ctx.lineTo(-30,18); ctx.closePath();
+            ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.ellipse(-28,0,8,5,0,0,Math.PI*2);
+            ctx.fillStyle='#ff6600'; ctx.shadowColor='#ff6600'; ctx.shadowBlur=20; ctx.fill();
+            ctx.restore();
+        }
+
+        function addExhaust(x, y) {
+            for (var i = 0; i < 3; i++) {
+                exhaustList.push({
+                    x: x - 30, y: y + (Math.random()-0.5)*10,
+                    vx: -(Math.random()*3+1), vy: (Math.random()-0.5)*1.5,
+                    alpha: 0.8, r: Math.random()*4+2,
+                    color: Math.random()<0.5 ? '#ff6600' : '#ffcc00'
+                });
+            }
+        }
+
+        function drawExhaust(ctx) {
+            exhaustList = exhaustList.filter(function(p) { return p.alpha > 0.05; });
+            exhaustList.forEach(function(p) {
+                p.x += p.vx; p.y += p.vy; p.alpha -= 0.04; p.r *= 0.96;
+                ctx.save(); ctx.globalAlpha = p.alpha;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+                ctx.fillStyle = p.color; ctx.shadowColor = p.color; ctx.shadowBlur = 8; ctx.fill();
+                ctx.restore();
+            });
+        }
+
+        setInterval(function() {
+            if (!shipObj) return;
+            var canvas = document.getElementById('bg-canvas');
+            if (!canvas) return;
+            var ctx = canvas.getContext('2d');
+
+            if (shipObj.phase === 'enter') {
+                shipObj.x += shipObj.speed;
+                addExhaust(shipObj.x, shipObj.y);
+                drawShipShape(ctx, shipObj.x, shipObj.y);
+                drawExhaust(ctx);
+                if (shipObj.x >= shipObj.loopCenterX) {
+                    shipObj.phase = 'loop';
+                    shipObj.loopAngle = -Math.PI / 2;
+                }
+            } else if (shipObj.phase === 'loop') {
+                shipObj.loopAngle += 0.05;
+                shipObj.x = shipObj.loopCenterX + Math.cos(shipObj.loopAngle) * shipObj.loopRadius;
+                shipObj.y = shipObj.loopCenterY + Math.sin(shipObj.loopAngle) * shipObj.loopRadius;
+                addExhaust(shipObj.x, shipObj.y);
+                drawShipShape(ctx, shipObj.x, shipObj.y);
+                drawExhaust(ctx);
+                if (shipObj.loopAngle >= -Math.PI/2 + Math.PI*2*2) {
+                    shipObj.phase = 'exit';
+                    shipObj.y = shipObj.loopCenterY;
+                }
+            } else if (shipObj.phase === 'exit') {
+                shipObj.x += shipObj.speed * 3;
+                addExhaust(shipObj.x, shipObj.y);
+                drawShipShape(ctx, shipObj.x, shipObj.y);
+                drawExhaust(ctx);
+                if (shipObj.x > window.innerWidth + 200) shipObj = null;
+            }
+        }, 16);
+
+        // Spawn aléatoire rare
+        function tryRandSpawn() {
+            if (!shipObj && Math.random() < 0.002) spawnShip();
+            setTimeout(tryRandSpawn, 3000);
+        }
+        setTimeout(tryRandSpawn, 8000);
+        // ===== FIN VAISSEAU =====
+
+
+        function filterCatalog(query) {
+            const q = query.trim().toLowerCase();
+            const cards = document.querySelectorAll('#catalog-grid .product-card');
+            let found = 0;
+
+            cards.forEach(card => {
+                const name = card.querySelector('h3') ? card.querySelector('h3').textContent.toLowerCase() : '';
+                const desc = card.querySelector('p') ? card.querySelector('p').textContent.toLowerCase() : '';
+                if (q === '' || name.includes(q) || desc.includes(q)) {
+                    card.style.display = '';
+                    found++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            document.getElementById('no-result').style.display = (found === 0 && q !== '') ? 'block' : 'none';
+        }
+    </script>
+
+    <!-- Zone secrète invisible coin bas droite -->
+    <div id="secret-zone" style="position:fixed; bottom:0; right:0; width:50px; height:50px; z-index:9999;"></div>
+
+    <!-- Modal code secret -->
+    <div id="secret-modal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#0a0e27; border:2px solid #00d4ff; border-radius:15px; padding:2rem; z-index:99999; text-align:center; box-shadow:0 0 40px rgba(0,212,255,0.5); min-width:280px;">
+        <p style="color:#00d4ff; font-size:1.1rem; font-weight:bold; margin-bottom:1rem; text-shadow:0 0 10px #00d4ff;">🔐 Code secret</p>
+        <input id="secret-input" type="password" placeholder="Entre le code..." maxlength="20"
+            style="width:100%; padding:0.7rem 1rem; border-radius:50px; border:2px solid #00d4ff; background:rgba(0,20,60,0.8); color:#fff; font-size:1rem; outline:none; box-sizing:border-box; text-align:center;">
+        <div style="margin-top:1rem; display:flex; gap:0.5rem; justify-content:center;">
+            <button onclick="checkSecretCode()" style="background:linear-gradient(135deg,#00d4ff,#0066ff); color:#fff; border:none; padding:0.6rem 1.5rem; border-radius:50px; font-weight:bold; cursor:pointer; font-size:1rem;">OK</button>
+            <button onclick="document.getElementById('secret-modal').style.display='none'" style="background:transparent; color:#00d4ff; border:2px solid #00d4ff; padding:0.6rem 1.5rem; border-radius:50px; cursor:pointer; font-size:1rem;">Annuler</button>
+        </div>
+        <p id="secret-error" style="color:#ff0055; margin-top:0.8rem; display:none; font-weight:bold;">❌ Code incorrect</p>
+        <p id="secret-success" style="color:#00ff88; margin-top:0.8rem; display:none; font-weight:bold;">🚀 Lancement !</p>
+    </div>
+
+    <script>
+        // Zone secrète
+        document.getElementById('secret-zone').addEventListener('click', function() {
+            document.getElementById('secret-modal').style.display = 'block';
+            setTimeout(function() { document.getElementById('secret-input').focus(); }, 100);
+        });
+        document.getElementById('secret-zone').addEventListener('touchend', function(e) {
+            e.preventDefault();
+            document.getElementById('secret-modal').style.display = 'block';
+            setTimeout(function() { document.getElementById('secret-input').focus(); }, 100);
+        });
+
+        // Valider avec Entrée
+        document.getElementById('secret-input').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') checkSecretCode();
+            if (e.key === 'Escape') document.getElementById('secret-modal').style.display = 'none';
+        });
+
+        function checkSecretCode() {
+            var input = document.getElementById('secret-input');
+            var error = document.getElementById('secret-error');
+            var success = document.getElementById('secret-success');
+            if (input.value.toLowerCase() === 'nomar3d') {
+                error.style.display = 'none';
+                success.style.display = 'block';
+                input.value = '';
+                setTimeout(function() {
+                    document.getElementById('secret-modal').style.display = 'none';
+                    success.style.display = 'none';
+                    if (typeof window.forceSpawnShip === 'function') {
+                        window.forceSpawnShip();
+                    }
+                }, 800);
+            } else {
+                success.style.display = 'none';
+                error.style.display = 'block';
+                input.value = '';
+                setTimeout(function() { error.style.display = 'none'; }, 2000);
+            }
+        }
+
+        // ===== BOÎTES MYSTÈRE =====
+        var currentBoite = null;
+
+        function commanderBoite(taille, prix) {
+            currentBoite = { taille: taille, prix: prix };
+            document.getElementById('mystere-titre').textContent = '📦 Boîte Mystère ' + taille;
+            document.getElementById('mystere-prix').textContent = prix + '€';
+            document.getElementById('mystere-modal').style.display = 'block';
+            document.getElementById('mystere-paypal-container').innerHTML = '';
+            document.getElementById('mystere-form-error').style.display = 'none';
+            
+            // Pré-remplir email si connecté
+            if (userEmail) document.getElementById('mystere-email').value = userEmail;
+
+            // Charger le bouton PayPal pour la boîte
+            var tries = 0;
+            var waitPaypal = setInterval(function() {
+                tries++;
+                if (typeof paypal !== 'undefined') {
+                    clearInterval(waitPaypal);
+                    renderMysterePayPal();
+                } else if (tries > 20) {
+                    clearInterval(waitPaypal);
+                    document.getElementById('mystere-paypal-container').innerHTML = '<p style="color:#ff0055; text-align:center;">❌ Erreur chargement PayPal. Rechargez la page.</p>';
+                }
+            }, 200);
+        }
+
+        function fermerModalMystere() {
+            document.getElementById('mystere-modal').style.display = 'none';
+            currentBoite = null;
+        }
+
+        function renderMysterePayPal() {
+            if (!currentBoite) return;
+            var container = document.getElementById('mystere-paypal-container');
+            container.innerHTML = '';
+
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    var nom = document.getElementById('mystere-nom').value.trim();
+                    var email = document.getElementById('mystere-email').value.trim();
+                    var adresse = document.getElementById('mystere-adresse').value.trim();
+                    var erreur = document.getElementById('mystere-form-error');
+
+                    if (!nom) { erreur.textContent = '⚠️ Veuillez entrer votre nom'; erreur.style.display = 'block'; return Promise.reject(); }
+                    if (!email || !email.includes('@')) { erreur.textContent = '⚠️ Email invalide'; erreur.style.display = 'block'; return Promise.reject(); }
+                    if (!adresse) { erreur.textContent = '⚠️ Veuillez entrer votre adresse'; erreur.style.display = 'block'; return Promise.reject(); }
+                    erreur.style.display = 'none';
+
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: { value: currentBoite.prix, currency_code: 'EUR' },
+                            description: 'Boîte Mystère ' + currentBoite.taille + ' - Nomar3D'
+                        }]
+                    });
+                },
+                onApprove: function(data, actions) {
+                    return actions.order.capture().then(function(details) {
+                        var nom = document.getElementById('mystere-nom').value.trim();
+                        var email = document.getElementById('mystere-email').value.trim();
+                        var adresse = document.getElementById('mystere-adresse').value.trim();
+
+                        // Envoyer mail de notification à Lucas
+                        emailjs.send('service_yfhuws5', 'template_cdg19jo', {
+                            to_email: 'lucas.nomme29@gmail.com',
+                            email: 'lucas.nomme29@gmail.com',
+                            subject: '🎁 Nouvelle commande Boîte Mystère ' + currentBoite.taille,
+                            message: 'Nouvelle commande payée !\n\nBoîte : ' + currentBoite.taille + ' (' + currentBoite.prix + '€)\nClient : ' + nom + '\nEmail : ' + email + '\nAdresse : ' + adresse + '\nTransaction : ' + details.id
+                        });
+
+                        // Envoyer mail de confirmation au client
+                        emailjs.send('service_yfhuws5', 'template_cdg19jo', {
+                            to_email: email,
+                            email: email,
+                            subject: '✅ Confirmation commande Nomar3D',
+                            message: 'Bonjour ' + nom + ',\n\nMerci pour votre commande !\n\nBoîte Mystère ' + currentBoite.taille + ' : ' + currentBoite.prix + '€\nAdresse de livraison : ' + adresse + '\n\nVous serez contacté prochainement pour la livraison.\n\nNomar3D'
+                        });
+
+                        fermerModalMystere();
+                        alert('✅ Paiement réussi ! Vous allez recevoir un email de confirmation. Merci !');
+                    });
+                },
+                onError: function(err) {
+                    alert('❌ Erreur lors du paiement. Veuillez réessayer.');
+                }
+            }).render('#mystere-paypal-container');
+        }
+        // ===== FIN BOÎTES MYSTÈRE =====
+
+
+        // ===== PANEL ADMIN BAN =====
+        var banTargetEmail = '';
+
+        function showAdminTab(tab) {
+            document.getElementById('admin-users').style.display = tab === 'users' ? 'block' : 'none';
+            document.getElementById('admin-bans').style.display = tab === 'bans' ? 'block' : 'none';
+            document.getElementById('tab-users').className = tab === 'users' ? 'btn-primary' : 'btn-secondary';
+            document.getElementById('tab-bans').className = tab === 'bans' ? 'btn-primary' : 'btn-secondary';
+            document.getElementById('tab-users').style.padding = '0.6rem 1.2rem';
+            document.getElementById('tab-bans').style.padding = '0.6rem 1.2rem';
+            if (tab === 'users') loadAdminUsers();
+            if (tab === 'bans') loadAdminBans();
+        }
+
+        function makeUserCard(m) {
+            var ban = JSON.parse(localStorage.getItem('ban_' + m.email) || 'null');
+            var isBanned = ban && (ban.type === 'definitif' || ban.until > Date.now());
+            var div = document.createElement('div');
+            div.style.cssText = 'background:rgba(0,20,60,0.6);border:2px solid ' + (isBanned ? '#ff0055' : 'rgba(0,212,255,0.3)') + ';border-radius:12px;padding:1rem;margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;';
+            var info = document.createElement('div');
+            info.innerHTML = '<p style="color:#fff;font-weight:bold;margin:0 0 4px;">' + (m.prenom || '?') + ' &nbsp;<span style="color:#a0d4ff;font-weight:normal;font-size:0.85rem;">' + m.email + '</span>' + (isBanned ? ' <span style="color:#ff0055;">Banni</span>' : '') + '</p><p style="color:#a0d4ff;font-size:0.8rem;margin:0;">Inscrit le ' + (m.date || '?') + '</p>';
+            var btn = document.createElement('button');
+            if (isBanned) {
+                btn.textContent = 'Debannir';
+                btn.style.cssText = 'background:linear-gradient(135deg,#00ff88,#00d4ff);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:50px;cursor:pointer;font-weight:bold;';
+                btn.onclick = function() { unbanUser(m.email); };
+            } else {
+                btn.textContent = 'Bannir';
+                btn.style.cssText = 'background:linear-gradient(135deg,#ff0055,#ff6600);color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:50px;cursor:pointer;font-weight:bold;';
+                btn.onclick = function() { openBanModal(m.email, m.prenom || m.email); };
+            }
+            div.appendChild(info);
+            div.appendChild(btn);
+            return div;
+        }
+
+        function loadAdminUsers() {
+            var list = document.getElementById('users-list');
+            if (!list) return;
+            if (!db) { list.innerHTML = '<p style="color:#ff0055;text-align:center;">Firebase non disponible.</p>'; return; }
+            list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Chargement...</p>';
+            db.collection('membres').get().then(function(snapshot) {
+                list.innerHTML = '';
+                if (snapshot.empty) {
+                    list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Aucun membre inscrit pour le moment.</p>';
+                    return;
+                }
+                snapshot.forEach(function(doc) { list.appendChild(makeUserCard(doc.data())); });
+            }).catch(function(e) {
+                list.innerHTML = '<p style="color:#ff0055;text-align:center;">Erreur chargement: ' + e.message + '</p>';
+            });
+        }
+
+        function loadAdminBans() {
+            var list = document.getElementById('bans-list');
+            if (!list) return;
+            if (!db) { list.innerHTML = '<p style="color:#ff0055;text-align:center;">Firebase non disponible.</p>'; return; }
+            list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Chargement...</p>';
+            db.collection('bans').get().then(function(snapshot) {
+                list.innerHTML = '';
+                var hasBans = false;
+                snapshot.forEach(function(doc) {
+                    var b = doc.data();
+                    if (b.type === 'definitif' || b.until > Date.now()) {
+                        hasBans = true;
+                        var info = b.type === 'definitif' ? 'Definitif' : 'Expire le ' + new Date(b.until).toLocaleString('fr-FR');
+                        var div = document.createElement('div');
+                        div.style.cssText = 'background:rgba(255,0,85,0.1);border:2px solid #ff0055;border-radius:12px;padding:1rem;margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;';
+                        var infoDiv = document.createElement('div');
+                        infoDiv.innerHTML = '<p style="color:#fff;font-weight:bold;margin:0 0 4px;">' + (b.prenom || '?') + ' <span style="color:#a0d4ff;font-size:0.85rem;">' + b.email + '</span></p><p style="color:#ff6600;font-size:0.85rem;margin:0;">' + info + '</p>';
+                        var btn = document.createElement('button');
+                        btn.textContent = 'Debannir';
+                        btn.style.cssText = 'background:linear-gradient(135deg,#00ff88,#00d4ff);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:50px;cursor:pointer;font-weight:bold;';
+                        btn.onclick = (function(email) { return function() { unbanUser(email); }; })(b.email);
+                        div.appendChild(infoDiv);
+                        div.appendChild(btn);
+                        list.appendChild(div);
+                    }
+                });
+                if (!hasBans) list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Aucun ban actif.</p>';
+            }).catch(function(e) {
+                list.innerHTML = '<p style="color:#ff0055;text-align:center;">Erreur: ' + e.message + '</p>';
+            });
+        }
+
+        function openBanModal(email, prenom) {
+            banTargetEmail = email;
+            document.getElementById('ban-target-name').textContent = prenom;
+            document.getElementById('ban-target-email-display').textContent = email;
+            document.getElementById('ban-modal').style.display = 'block';
+            document.getElementById('ban-type').value = 'temporaire';
+            document.getElementById('ban-duration-section').style.display = 'block';
+            document.getElementById('ban-duration').value = 1;
+            document.getElementById('ban-unit').value = 'jours';
+        }
+
+        function toggleBanDuration() {
+            const type = document.getElementById('ban-type').value;
+            document.getElementById('ban-duration-section').style.display = type === 'temporaire' ? 'block' : 'none';
+        }
+
+        function confirmBan() {
+            if (!banTargetEmail) return;
+            var type = document.getElementById('ban-type').value;
+            var banData = { email: banTargetEmail, prenom: document.getElementById('ban-target-name').textContent };
+            if (type === 'definitif') {
+                banData.type = 'definitif';
+            } else {
+                var duration = parseInt(document.getElementById('ban-duration').value) || 1;
+                var unit = document.getElementById('ban-unit').value;
+                var ms = duration;
+                if (unit === 'minutes') ms *= 60 * 1000;
+                else if (unit === 'heures') ms *= 3600 * 1000;
+                else ms *= 86400 * 1000;
+                banData.type = 'temporaire';
+                banData.until = Date.now() + ms;
+            }
+            var key = banTargetEmail.replace('@','_').replace('.','_');
+            // Sauvegarder dans Firebase ET localStorage (double sécurité)
+            if (db) db.collection('bans').doc(key).set(banData);
+            localStorage.setItem('ban_' + banTargetEmail, JSON.stringify(banData));
+            document.getElementById('ban-modal').style.display = 'none';
+            loadAdminUsers();
+            alert('Banni : ' + banTargetEmail);
+        }
+
+        function unbanUser(email) {
+            var key = email.replace('@','_').replace('.','_');
+            if (db) db.collection('bans').doc(key).delete();
+            localStorage.removeItem('ban_' + email);
+            loadAdminUsers();
+            loadAdminBans();
+            alert('Debanni : ' + email);
+        }
+        // ===== FIN PANEL ADMIN =====
+
+    </script>
+</body>
+</html>
