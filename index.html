@@ -1797,28 +1797,20 @@
         }
 
         function completeLogin(email) {
-            // Vérifier si banni (Firebase en priorité, localStorage en fallback)
-            var banKey = email.replace('@','_').replace('.','_');
-            db.collection('bans').doc(banKey).get().then(function(doc) {
-                var banInfo = doc.exists ? doc.data() : JSON.parse(localStorage.getItem('ban_' + email) || 'null');
-                if (banInfo) {
-                    if (banInfo.type === 'definitif') { showBannedScreen(true, null, email); return; }
-                    var remaining = banInfo.until - Date.now();
-                    if (remaining > 0) { showBannedScreen(false, banInfo.until, email); return; }
-                    else { db.collection('bans').doc(banKey).delete(); localStorage.removeItem('ban_' + email); }
-                }
-                finishLogin(email);
-            }).catch(function() {
-                // Fallback localStorage si Firebase indisponible
-                var banInfo = JSON.parse(localStorage.getItem('ban_' + email) || 'null');
-                if (banInfo && (banInfo.type === 'definitif' || banInfo.until > Date.now())) {
-                    showBannedScreen(banInfo.type === 'definitif', banInfo.until, email); return;
-                }
-                finishLogin(email);
-            });
-            return; // La suite est dans finishLogin
-
-            finishLogin(email);
+            // Vérifier si banni via Firebase, avec fallback localStorage
+            try {
+                var banKey = email.replace(/[@.]/g, '_');
+                db.collection('bans').doc(banKey).get().then(function(doc) {
+                    var banInfo = doc.exists ? doc.data() : JSON.parse(localStorage.getItem('ban_' + email) || 'null');
+                    if (banInfo) {
+                        if (banInfo.type === 'definitif') { showBannedScreen(true, null, email); return; }
+                        if (banInfo.until && banInfo.until > Date.now()) { showBannedScreen(false, banInfo.until, email); return; }
+                        db.collection('bans').doc(banKey).delete().catch(function(){});
+                        localStorage.removeItem('ban_' + email);
+                    }
+                    finishLogin(email);
+                }).catch(function() { finishLogin(email); });
+            } catch(e) { finishLogin(email); }
         }
 
         function finishLogin(email) {
