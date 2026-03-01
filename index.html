@@ -1740,12 +1740,12 @@
             localStorage.setItem('password_' + pendingRegistration.email, pendingRegistration.password);
             localStorage.setItem('verified_' + pendingRegistration.email, 'true');
             localStorage.setItem('prenom_' + pendingRegistration.email, pendingRegistration.prenom || '');
-            // Ajouter à la liste des membres
-            const members = JSON.parse(localStorage.getItem('nomar3d_members') || '[]');
-            if (!members.find(m => m.email === pendingRegistration.email)) {
-                members.push({ email: pendingRegistration.email, prenom: pendingRegistration.prenom || '', date: new Date().toLocaleDateString('fr-FR') });
-                localStorage.setItem('nomar3d_members', JSON.stringify(members));
-            }
+            // Sauvegarder dans Firebase
+            db.collection('membres').doc(pendingRegistration.email.replace('@','_').replace('.','_')).set({
+                email: pendingRegistration.email,
+                prenom: pendingRegistration.prenom || '',
+                date: new Date().toLocaleDateString('fr-FR')
+            }).catch(function(e) { console.log('Firebase erreur:', e); });
             
             messageElement.style.color = '#00ff88';
             messageElement.textContent = '✅ Compte créé avec succès ! Connexion...';
@@ -1797,48 +1797,49 @@
         }
 
         function completeLogin(email) {
-            // Vérifier si banni
-            const banInfo = JSON.parse(localStorage.getItem('ban_' + email) || 'null');
-            if (banInfo) {
-                if (banInfo.type === 'definitif') {
-                    showBannedScreen(true, null, email);
-                    return;
-                } else {
-                    const remaining = banInfo.until - Date.now();
-                    if (remaining > 0) {
-                        showBannedScreen(false, banInfo.until, email);
-                        return;
-                    } else {
-                        localStorage.removeItem('ban_' + email);
-                    }
+            // Vérifier si banni (Firebase en priorité, localStorage en fallback)
+            var banKey = email.replace('@','_').replace('.','_');
+            db.collection('bans').doc(banKey).get().then(function(doc) {
+                var banInfo = doc.exists ? doc.data() : JSON.parse(localStorage.getItem('ban_' + email) || 'null');
+                if (banInfo) {
+                    if (banInfo.type === 'definitif') { showBannedScreen(true, null, email); return; }
+                    var remaining = banInfo.until - Date.now();
+                    if (remaining > 0) { showBannedScreen(false, banInfo.until, email); return; }
+                    else { db.collection('bans').doc(banKey).delete(); localStorage.removeItem('ban_' + email); }
                 }
-            }
+                finishLogin(email);
+            }).catch(function() {
+                // Fallback localStorage si Firebase indisponible
+                var banInfo = JSON.parse(localStorage.getItem('ban_' + email) || 'null');
+                if (banInfo && (banInfo.type === 'definitif' || banInfo.until > Date.now())) {
+                    showBannedScreen(banInfo.type === 'definitif', banInfo.until, email); return;
+                }
+                finishLogin(email);
+            });
+            return; // La suite est dans finishLogin
 
+            finishLogin(email);
+        }
+
+        function finishLogin(email) {
             userEmail = email;
-            // Cacher toutes les sous-sections
-            const sections = ['login-section', 'registration-section', 'verification-section'];
-            sections.forEach(id => {
-                const el = document.getElementById(id);
+            ['login-section', 'registration-section', 'verification-section'].forEach(function(id) {
+                var el = document.getElementById(id);
                 if (el) el.style.display = 'none';
             });
-            // Afficher le profil
-            const profile = document.getElementById('user-profile');
-            const profileEmail = document.getElementById('profile-email');
-            const profilePrenom = document.getElementById('profile-prenom');
+            var profile = document.getElementById('user-profile');
+            var profileEmail = document.getElementById('profile-email');
+            var profilePrenom = document.getElementById('profile-prenom');
             if (profile) profile.style.display = 'block';
             if (profileEmail) profileEmail.textContent = email;
-            const prenom = localStorage.getItem('prenom_' + email);
-            if (profilePrenom && prenom) profilePrenom.textContent = 'Bonjour ' + prenom + ' 👋';
-            const loginError = document.getElementById('login-error');
+            var prenom = localStorage.getItem('prenom_' + email);
+            if (profilePrenom && prenom) profilePrenom.textContent = 'Bonjour ' + prenom + ' !';
+            var loginError = document.getElementById('login-error');
             if (loginError) loginError.style.display = 'none';
-
-            // Afficher panel admin si c'est Lucas
             if (email === ADMIN_EMAIL) {
-                const adminPanel = document.getElementById('admin-panel');
+                var adminPanel = document.getElementById('admin-panel');
                 if (adminPanel) { adminPanel.style.display = 'block'; loadAdminUsers(); }
             }
-            
-            // Charger le panier sauvegardé
             loadCart();
             updateCartCount();
         }
@@ -2993,44 +2994,49 @@
         }
 
         function loadAdminUsers() {
-            var members = JSON.parse(localStorage.getItem('nomar3d_members') || '[]');
             var list = document.getElementById('users-list');
             if (!list) return;
-            list.innerHTML = '';
-            if (members.length === 0) {
-                list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Aucun membre inscrit pour le moment.</p>';
-                return;
-            }
-            members.forEach(function(m) { list.appendChild(makeUserCard(m)); });
+            list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Chargement...</p>';
+            db.collection('membres').get().then(function(snapshot) {
+                list.innerHTML = '';
+                if (snapshot.empty) {
+                    list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Aucun membre inscrit pour le moment.</p>';
+                    return;
+                }
+                snapshot.forEach(function(doc) { list.appendChild(makeUserCard(doc.data())); });
+            }).catch(function(e) {
+                list.innerHTML = '<p style="color:#ff0055;text-align:center;">Erreur chargement: ' + e.message + '</p>';
+            });
         }
 
         function loadAdminBans() {
-            var members = JSON.parse(localStorage.getItem('nomar3d_members') || '[]');
             var list = document.getElementById('bans-list');
             if (!list) return;
-            list.innerHTML = '';
-            var banned = members.filter(function(m) {
-                var b = JSON.parse(localStorage.getItem('ban_' + m.email) || 'null');
-                return b && (b.type === 'definitif' || b.until > Date.now());
-            });
-            if (banned.length === 0) {
-                list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Aucun ban actif.</p>';
-                return;
-            }
-            banned.forEach(function(m) {
-                var b = JSON.parse(localStorage.getItem('ban_' + m.email));
-                var info = b.type === 'definitif' ? 'Definitif' : 'Expire le ' + new Date(b.until).toLocaleString('fr-FR');
-                var div = document.createElement('div');
-                div.style.cssText = 'background:rgba(255,0,85,0.1);border:2px solid #ff0055;border-radius:12px;padding:1rem;margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;';
-                var infoDiv = document.createElement('div');
-                infoDiv.innerHTML = '<p style="color:#fff;font-weight:bold;margin:0 0 4px;">' + (m.prenom || '?') + ' <span style="color:#a0d4ff;font-size:0.85rem;">' + m.email + '</span></p><p style="color:#ff6600;font-size:0.85rem;margin:0;">' + info + '</p>';
-                var btn = document.createElement('button');
-                btn.textContent = 'Debannir';
-                btn.style.cssText = 'background:linear-gradient(135deg,#00ff88,#00d4ff);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:50px;cursor:pointer;font-weight:bold;';
-                btn.onclick = function() { unbanUser(m.email); };
-                div.appendChild(infoDiv);
-                div.appendChild(btn);
-                list.appendChild(div);
+            list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Chargement...</p>';
+            db.collection('bans').get().then(function(snapshot) {
+                list.innerHTML = '';
+                var hasBans = false;
+                snapshot.forEach(function(doc) {
+                    var b = doc.data();
+                    if (b.type === 'definitif' || b.until > Date.now()) {
+                        hasBans = true;
+                        var info = b.type === 'definitif' ? 'Definitif' : 'Expire le ' + new Date(b.until).toLocaleString('fr-FR');
+                        var div = document.createElement('div');
+                        div.style.cssText = 'background:rgba(255,0,85,0.1);border:2px solid #ff0055;border-radius:12px;padding:1rem;margin-bottom:0.8rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;';
+                        var infoDiv = document.createElement('div');
+                        infoDiv.innerHTML = '<p style="color:#fff;font-weight:bold;margin:0 0 4px;">' + (b.prenom || '?') + ' <span style="color:#a0d4ff;font-size:0.85rem;">' + b.email + '</span></p><p style="color:#ff6600;font-size:0.85rem;margin:0;">' + info + '</p>';
+                        var btn = document.createElement('button');
+                        btn.textContent = 'Debannir';
+                        btn.style.cssText = 'background:linear-gradient(135deg,#00ff88,#00d4ff);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:50px;cursor:pointer;font-weight:bold;';
+                        btn.onclick = (function(email) { return function() { unbanUser(email); }; })(b.email);
+                        div.appendChild(infoDiv);
+                        div.appendChild(btn);
+                        list.appendChild(div);
+                    }
+                });
+                if (!hasBans) list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Aucun ban actif.</p>';
+            }).catch(function(e) {
+                list.innerHTML = '<p style="color:#ff0055;text-align:center;">Erreur: ' + e.message + '</p>';
             });
         }
 
@@ -3052,30 +3058,36 @@
 
         function confirmBan() {
             if (!banTargetEmail) return;
-            const type = document.getElementById('ban-type').value;
-            var banData;
+            var type = document.getElementById('ban-type').value;
+            var banData = { email: banTargetEmail, prenom: document.getElementById('ban-target-name').textContent };
             if (type === 'definitif') {
-                banData = { type: 'definitif' };
+                banData.type = 'definitif';
             } else {
-                const duration = parseInt(document.getElementById('ban-duration').value) || 1;
-                const unit = document.getElementById('ban-unit').value;
+                var duration = parseInt(document.getElementById('ban-duration').value) || 1;
+                var unit = document.getElementById('ban-unit').value;
                 var ms = duration;
                 if (unit === 'minutes') ms *= 60 * 1000;
                 else if (unit === 'heures') ms *= 3600 * 1000;
                 else ms *= 86400 * 1000;
-                banData = { type: 'temporaire', until: Date.now() + ms };
+                banData.type = 'temporaire';
+                banData.until = Date.now() + ms;
             }
+            var key = banTargetEmail.replace('@','_').replace('.','_');
+            // Sauvegarder dans Firebase ET localStorage (double sécurité)
+            db.collection('bans').doc(key).set(banData);
             localStorage.setItem('ban_' + banTargetEmail, JSON.stringify(banData));
             document.getElementById('ban-modal').style.display = 'none';
             loadAdminUsers();
-            alert('✅ ' + banTargetEmail + ' a été banni !');
+            alert('Banni : ' + banTargetEmail);
         }
 
         function unbanUser(email) {
+            var key = email.replace('@','_').replace('.','_');
+            db.collection('bans').doc(key).delete();
             localStorage.removeItem('ban_' + email);
             loadAdminUsers();
             loadAdminBans();
-            alert('✅ ' + email + ' a été débanni !');
+            alert('Debanni : ' + email);
         }
         // ===== FIN PANEL ADMIN =====
 
