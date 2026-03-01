@@ -1741,11 +1741,13 @@
             localStorage.setItem('verified_' + pendingRegistration.email, 'true');
             localStorage.setItem('prenom_' + pendingRegistration.email, pendingRegistration.prenom || '');
             // Sauvegarder dans Firebase
-            db.collection('membres').doc(pendingRegistration.email.replace('@','_').replace('.','_')).set({
-                email: pendingRegistration.email,
-                prenom: pendingRegistration.prenom || '',
-                date: new Date().toLocaleDateString('fr-FR')
-            }).catch(function(e) { console.log('Firebase erreur:', e); });
+            if (db) {
+                db.collection('membres').doc(pendingRegistration.email.replace(/[@.]/g,'_')).set({
+                    email: pendingRegistration.email,
+                    prenom: pendingRegistration.prenom || '',
+                    date: new Date().toLocaleDateString('fr-FR')
+                }).catch(function(e) { console.log('Firebase erreur:', e); });
+            }
             
             messageElement.style.color = '#00ff88';
             messageElement.textContent = '✅ Compte créé avec succès ! Connexion...';
@@ -1797,7 +1799,7 @@
         }
 
         function completeLogin(email) {
-            // Vérifier si banni via Firebase, avec fallback localStorage
+            if (!db) { finishLogin(email); return; }
             try {
                 var banKey = email.replace(/[@.]/g, '_');
                 db.collection('bans').doc(banKey).get().then(function(doc) {
@@ -2988,6 +2990,7 @@
         function loadAdminUsers() {
             var list = document.getElementById('users-list');
             if (!list) return;
+            if (!db) { list.innerHTML = '<p style="color:#ff0055;text-align:center;">Firebase non disponible.</p>'; return; }
             list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Chargement...</p>';
             db.collection('membres').get().then(function(snapshot) {
                 list.innerHTML = '';
@@ -3004,6 +3007,7 @@
         function loadAdminBans() {
             var list = document.getElementById('bans-list');
             if (!list) return;
+            if (!db) { list.innerHTML = '<p style="color:#ff0055;text-align:center;">Firebase non disponible.</p>'; return; }
             list.innerHTML = '<p style="color:#a0d4ff;text-align:center;">Chargement...</p>';
             db.collection('bans').get().then(function(snapshot) {
                 list.innerHTML = '';
@@ -3066,7 +3070,7 @@
             }
             var key = banTargetEmail.replace('@','_').replace('.','_');
             // Sauvegarder dans Firebase ET localStorage (double sécurité)
-            db.collection('bans').doc(key).set(banData);
+            if (db) db.collection('bans').doc(key).set(banData);
             localStorage.setItem('ban_' + banTargetEmail, JSON.stringify(banData));
             document.getElementById('ban-modal').style.display = 'none';
             loadAdminUsers();
@@ -3075,7 +3079,7 @@
 
         function unbanUser(email) {
             var key = email.replace('@','_').replace('.','_');
-            db.collection('bans').doc(key).delete();
+            if (db) db.collection('bans').doc(key).delete();
             localStorage.removeItem('ban_' + email);
             loadAdminUsers();
             loadAdminBans();
